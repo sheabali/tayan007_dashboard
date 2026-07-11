@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { CloudCog } from "lucide-react";
 
 interface NRTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,7 +34,6 @@ export function NRTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
   return (
     <div className="my-5">
       <Table>
@@ -48,9 +48,9 @@ export function NRTable<TData, TValue>({
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                 </TableHead>
               ))}
             </TableRow>
