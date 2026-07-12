@@ -66,9 +66,15 @@ const data = {
       },
       {
         title: "Applications",
-        url: "/admin/applications",
+        url: "/admin/dashboard/applications",
         icon: User,
       },
+      {
+        title: "Payment",
+        url: "/admin/payment",
+        icon: User,
+      },
+
       {
         title: "Your Profile",
         url: "/user/dashboard/profile",

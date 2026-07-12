@@ -2,14 +2,8 @@
 
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { NRTable } from "@/components/ui/core/NRTable";
+import { ColumnDef } from "@tanstack/react-table";
 import {
   Dialog,
   DialogContent,
@@ -81,6 +75,82 @@ export default function RecentTransactions({
     setSelectedTx(null);
   };
 
+  // Define Columns for NRTable
+  const columns: ColumnDef<Transaction>[] = [
+    {
+      header: "ID",
+      accessorKey: "id",
+      cell: ({ row }) => {
+        const tx = row.original;
+        return (
+          <div onClick={() => handleRowClick(tx)} className="py-2.5 cursor-pointer text-xs font-semibold text-slate-500 w-full h-full">
+            {tx.id}
+          </div>
+        );
+      },
+    },
+    {
+      header: "Date",
+      accessorKey: "date",
+      cell: ({ row }) => {
+        const tx = row.original;
+        return (
+          <div onClick={() => handleRowClick(tx)} className="py-2.5 cursor-pointer text-xs text-slate-400 font-semibold w-full h-full">
+            {tx.date}
+          </div>
+        );
+      },
+    },
+    {
+      header: "Client / Creator",
+      accessorKey: "client",
+      cell: ({ row }) => {
+        const tx = row.original;
+        return (
+          <div onClick={() => handleRowClick(tx)} className="py-2.5 cursor-pointer flex flex-col leading-none w-full h-full">
+            <span className="text-xs font-bold text-slate-800">
+              {tx.client}
+            </span>
+            <span className="text-[10px] text-slate-400 font-semibold mt-1">
+              to {tx.creator}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      header: "Amount",
+      accessorKey: "amount",
+      cell: ({ row }) => {
+        const tx = row.original;
+        return (
+          <div onClick={() => handleRowClick(tx)} className="py-2.5 cursor-pointer flex flex-col leading-none w-full h-full">
+            <span className="text-xs font-extrabold text-slate-800">
+              {formatCurrency(tx.amount)}
+            </span>
+            <span className="text-[9px] text-slate-400 font-semibold mt-1">
+              Fee: {formatCurrency(tx.fee)}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: ({ row }) => {
+        const tx = row.original;
+        return (
+          <div onClick={() => handleRowClick(tx)} className="py-2.5 cursor-pointer w-full h-full">
+            <span className={`border ${getStatusBadgeStyle(tx.status)}`}>
+              {tx.status}
+            </span>
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <div className="bg-white rounded-2xl border border-slate-100/80 shadow-sm overflow-hidden flex flex-col w-full hover:shadow-md transition-all duration-300">
       {/* Header and Filter Tab Buttons */}
@@ -93,7 +163,7 @@ export default function RecentTransactions({
         <div className="flex bg-slate-100 p-0.5 rounded-lg self-start">
           <button
             onClick={() => setFilter("ALL")}
-            className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all duration-200 ${
+            className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all duration-200 cursor-pointer ${
               filter === "ALL"
                 ? "bg-white text-slate-800 shadow-xs"
                 : "text-slate-400 hover:text-slate-600"
@@ -103,7 +173,7 @@ export default function RecentTransactions({
           </button>
           <button
             onClick={() => setFilter("COMPLETED")}
-            className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all duration-200 ${
+            className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all duration-200 cursor-pointer ${
               filter === "COMPLETED"
                 ? "bg-white text-emerald-600 shadow-xs"
                 : "text-slate-400 hover:text-slate-600"
@@ -113,7 +183,7 @@ export default function RecentTransactions({
           </button>
           <button
             onClick={() => setFilter("PENDING")}
-            className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all duration-200 ${
+            className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all duration-200 cursor-pointer ${
               filter === "PENDING"
                 ? "bg-white text-amber-600 shadow-xs"
                 : "text-slate-400 hover:text-slate-600"
@@ -124,78 +194,13 @@ export default function RecentTransactions({
         </div>
       </div>
 
-      {/* Transactions Table */}
-      <div className="overflow-x-auto w-full">
-        <Table>
-          <TableHeader className="bg-slate-50/50">
-            <TableRow className="hover:bg-transparent border-b border-slate-100">
-              <TableHead className="text-[10px] font-bold text-slate-500 uppercase tracking-wider py-4 px-6 w-1/5">
-                ID
-              </TableHead>
-              <TableHead className="text-[10px] font-bold text-slate-500 uppercase tracking-wider py-4 px-6 w-1/5">
-                Date
-              </TableHead>
-              <TableHead className="text-[10px] font-bold text-slate-500 uppercase tracking-wider py-4 px-6 w-2/5">
-                Client / Creator
-              </TableHead>
-              <TableHead className="text-[10px] font-bold text-slate-500 uppercase tracking-wider py-4 px-6 w-1/5">
-                Amount
-              </TableHead>
-              <TableHead className="text-[10px] font-bold text-slate-500 uppercase tracking-wider py-4 px-6 w-1/5">
-                Status
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredTransactions.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-10 text-slate-400 font-semibold text-xs">
-                  No transactions found.
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredTransactions.map((tx) => (
-                <TableRow
-                  key={tx.id}
-                  onClick={() => handleRowClick(tx)}
-                  className="hover:bg-slate-50/40 border-b border-slate-100 last:border-0 cursor-pointer transition-colors"
-                >
-                  <TableCell className="py-4.5 px-6 text-xs font-semibold text-slate-500">
-                    {tx.id}
-                  </TableCell>
-                  <TableCell className="py-4.5 px-6 text-xs text-slate-400 font-semibold">
-                    {tx.date}
-                  </TableCell>
-                  <TableCell className="py-4.5 px-6">
-                    <div className="flex flex-col leading-none">
-                      <span className="text-xs font-bold text-slate-800">
-                        {tx.client}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-semibold mt-1">
-                        to {tx.creator}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-4.5 px-6">
-                    <div className="flex flex-col leading-none">
-                      <span className="text-xs font-extrabold text-slate-800">
-                        {formatCurrency(tx.amount)}
-                      </span>
-                      <span className="text-[9px] text-slate-400 font-semibold mt-1">
-                        Fee: {formatCurrency(tx.fee)}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-4.5 px-6">
-                    <span className={`border ${getStatusBadgeStyle(tx.status)}`}>
-                      {tx.status}
-                    </span>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+      {/* Transactions Table using NRTable */}
+      <div className="px-6 py-2">
+        <NRTable
+          columns={columns}
+          data={filteredTransactions}
+          emptyMessage="No transactions available."
+        />
       </div>
 
       {/* Transaction Details Dialog */}

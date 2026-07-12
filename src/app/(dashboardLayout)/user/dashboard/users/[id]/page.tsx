@@ -57,9 +57,7 @@ export default function UserDetailsPage({ params }: PageProps) {
   );
 }
 
-/* ==========================================================================
-   CLIENT DETAILS VIEW COMPONENT
-   ========================================================================== */
+
 interface ClientDetailsViewProps {
   user: typeof mockUsers[0];
   id: string;

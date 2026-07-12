@@ -14,6 +14,7 @@ import {
 import { User, ShieldAlert, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
+import Link from "next/link";
 
 interface PayoutItem {
   id: number;
@@ -95,7 +96,7 @@ export default function UpcomingPayouts({
                       <User className="w-4 h-4" />
                     </div>
                   </div>
-                  
+
                   <div className="flex flex-col leading-tight">
                     <span className="text-xs font-extrabold text-slate-800 group-hover:text-blue-600 transition-colors">
                       {payout.name}
@@ -118,13 +119,14 @@ export default function UpcomingPayouts({
 
       {/* Button at the bottom */}
       <div className="mt-6">
-        <Button
-          variant="outline"
-          onClick={() => toast.info("Opening all payout transactions...")}
-          className="w-full h-10 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-lg text-xs"
-        >
-          Manage All Creator Payouts
-        </Button>
+        <Link href="/admin/payouts">
+          <Button
+            variant="outline"
+            onClick={() => toast.info("Opening all payout transactions...")}
+            className="w-full h-10 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-lg text-xs"
+          >
+            Manage All Creator Payouts
+          </Button></Link>
       </div>
 
       {/* Payout Details Modal */}

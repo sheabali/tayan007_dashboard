@@ -4,14 +4,8 @@ import { useGetMeQuery } from "@/redux/api/authApi";
 import { useAppSelector } from "@/redux/hooks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { NRTable } from "@/components/ui/core/NRTable";
+import { ColumnDef } from "@tanstack/react-table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -97,9 +91,6 @@ export default function ProjectList({
   const token = useAppSelector((state) => state.auth.token);
   const { data: userData } = useGetMeQuery({ skip: !token }) as any;
 
-  // Pagination local state
-  const [currentPage, setCurrentPage] = useState(1);
-
   // Map stage to badge styles
   const getStageBadgeStyle = (stage: string) => {
     switch (stage.toLowerCase()) {
@@ -135,6 +126,144 @@ export default function ProjectList({
   const completedCount = projects.filter(
     (p) => p.stage.toLowerCase() === "completed"
   ).length;
+
+  // Define Columns for NRTable
+  const columns: ColumnDef<ProjectData>[] = [
+    {
+      header: "Project Name",
+      accessorKey: "name",
+      cell: ({ row }) => {
+        const project = row.original;
+        return (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+              {project.name ? project.name[0] : "P"}
+            </div>
+            <span className="font-bold text-slate-700 text-sm">
+              {project.name}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      header: "Assigned Creator",
+      accessorKey: "creator",
+      cell: ({ row }) => {
+        const project = row.original;
+        return project.creator ? (
+          <div className="flex items-center gap-3">
+            <div className="relative w-7 h-7 rounded-full overflow-hidden border border-slate-100 shadow-xs shrink-0">
+              <Image
+                src={project.creator.avatar}
+                alt={project.creator.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <span className="text-slate-600 text-sm font-semibold">
+              {project.creator.name}
+            </span>
+          </div>
+        ) : (
+          <div onClick={(e) => e.stopPropagation()}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 border-slate-200 hover:bg-slate-50 text-slate-500 hover:text-slate-700 gap-1.5 rounded-lg text-xs font-bold py-1 px-2.5 cursor-pointer"
+                >
+                  Assign creator
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white border-slate-100 p-1 w-56 rounded-xl shadow-md">
+                {mockCreators.map((c) => (
+                  <DropdownMenuItem
+                    key={c.name}
+                    onClick={() => {
+                      onAssignCreator(project.id, c);
+                      toast.success(`Creator ${c.name} assigned successfully!`);
+                    }}
+                    className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors"
+                  >
+                    <div className="relative w-6 h-6 rounded-full overflow-hidden border border-slate-100">
+                      <Image
+                        src={c.avatar}
+                        alt={c.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold text-slate-700">{c.name}</span>
+                      <span className="text-[10px] text-slate-400 font-medium">{c.role}</span>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        );
+      },
+    },
+    {
+      header: "Client",
+      accessorKey: "client",
+      cell: ({ row }) => (
+        <span className="text-sm text-slate-600 font-semibold">
+          {row.original.client}
+        </span>
+      ),
+    },
+    {
+      header: "Stage",
+      accessorKey: "stage",
+      cell: ({ row }) => (
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${getStageBadgeStyle(row.original.stage)} shadow-xs`}>
+          {row.original.stage}
+        </span>
+      ),
+    },
+    {
+      header: "Deadline",
+      accessorKey: "deadline",
+      cell: ({ row }) => (
+        <span className="text-sm text-slate-500 font-medium">
+          {row.original.deadline}
+        </span>
+      ),
+    },
+    {
+      header: "Actions",
+      id: "actions",
+      cell: ({ row }) => {
+        const project = row.original;
+        return (
+          <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => onViewProject(project)}
+              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+              title="View project details"
+            >
+              <Eye className="w-4 h-4 stroke-[2]" />
+            </button>
+            <button
+              onClick={() => {
+                onDeleteProject(project.id);
+                toast.success("Project deleted successfully");
+              }}
+              className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
+              title="Delete project"
+            >
+              <Trash2 className="w-4 h-4 stroke-[2]" />
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto p-4 md:p-6 bg-slate-50/50 min-h-screen rounded-3xl border border-slate-100/50 shadow-xs mb-20">
@@ -181,7 +310,7 @@ export default function ProjectList({
               In Production
             </span>
             <span className="text-3xl font-extrabold text-slate-800 tracking-tight">
-              {inProductionCount + 20 /* Offset to match the 24 in mockup if needed */}
+              {inProductionCount + 20}
             </span>
           </div>
           <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
@@ -196,7 +325,7 @@ export default function ProjectList({
               Review Stage
             </span>
             <span className="text-3xl font-extrabold text-slate-800 tracking-tight">
-              {reviewCount + 9 /* Offset to match 11 in mockup if needed */}
+              {reviewCount + 9}
             </span>
           </div>
           <div className="p-3 bg-pink-50 text-pink-600 rounded-xl">
@@ -211,7 +340,7 @@ export default function ProjectList({
               Completed
             </span>
             <span className="text-3xl font-extrabold text-slate-800 tracking-tight">
-              {completedCount + 42 /* Offset to match 42 in mockup if needed */}
+              {completedCount + 42}
             </span>
           </div>
           <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
@@ -220,156 +349,12 @@ export default function ProjectList({
         </div>
       </div>
 
-      {/* 3. Projects Table card */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col w-full">
-        <div className="overflow-x-auto w-full">
-          <Table>
-            <TableHeader className="bg-slate-50/50">
-              <TableRow className="hover:bg-transparent border-b border-slate-100">
-                <TableHead className="text-xs font-bold text-slate-500 uppercase tracking-wider py-4 px-6">
-                  Project Name
-                </TableHead>
-                <TableHead className="text-xs font-bold text-slate-500 uppercase tracking-wider py-4 px-6">
-                  Assigned Creator
-                </TableHead>
-                <TableHead className="text-xs font-bold text-slate-500 uppercase tracking-wider py-4 px-6">
-                  Client
-                </TableHead>
-                <TableHead className="text-xs font-bold text-slate-500 uppercase tracking-wider py-4 px-6">
-                  Stage
-                </TableHead>
-                <TableHead className="text-xs font-bold text-slate-500 uppercase tracking-wider py-4 px-6">
-                  Deadline
-                </TableHead>
-                <TableHead className="text-xs font-bold text-slate-500 uppercase tracking-wider py-4 px-6 text-right">
-                  Actions
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {projects.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-10 text-slate-400 font-medium">
-                    No projects found.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                projects.map((project) => (
-                  <TableRow key={project.id} className="hover:bg-slate-50/40 border-b border-slate-100 last:border-0 transition-colors">
-                    {/* Project Name cell */}
-                    <TableCell className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-                          {project.name ? project.name[0] : "P"}
-                        </div>
-                        <span className="font-bold text-slate-700 text-sm">
-                          {project.name}
-                        </span>
-                      </div>
-                    </TableCell>
-
-                    {/* Assigned Creator cell */}
-                    <TableCell className="py-4 px-6">
-                      {project.creator ? (
-                        <div className="flex items-center gap-3">
-                          <div className="relative w-7 h-7 rounded-full overflow-hidden border border-slate-100 shadow-xs shrink-0">
-                            <Image
-                              src={project.creator.avatar}
-                              alt={project.creator.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <span className="text-slate-600 text-sm font-semibold">
-                            {project.creator.name}
-                          </span>
-                        </div>
-                      ) : (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-8 border-slate-200 hover:bg-slate-50 text-slate-500 hover:text-slate-700 gap-1.5 rounded-lg text-xs font-bold py-1 px-2.5"
-                            >
-                              Assign creator
-                              <ChevronDown className="w-3.5 h-3.5" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="bg-white border-slate-100 p-1 w-56 rounded-xl shadow-md">
-                            {mockCreators.map((c) => (
-                              <DropdownMenuItem
-                                key={c.name}
-                                onClick={() => onAssignCreator(project.id, c)}
-                                className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors"
-                              >
-                                <div className="relative w-6 h-6 rounded-full overflow-hidden border border-slate-100">
-                                  <Image
-                                    src={c.avatar}
-                                    alt={c.name}
-                                    fill
-                                    className="object-cover"
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <span className="text-xs font-bold text-slate-700">{c.name}</span>
-                                  <span className="text-[10px] text-slate-400 font-medium">{c.role}</span>
-                                </div>
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
-                    </TableCell>
-
-                    {/* Client cell */}
-                    <TableCell className="py-4 px-6 text-sm text-slate-600 font-semibold">
-                      {project.client}
-                    </TableCell>
-
-                    {/* Stage cell */}
-                    <TableCell className="py-4 px-6">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${getStageBadgeStyle(project.stage)} shadow-xs`}>
-                        {project.stage}
-                      </span>
-                    </TableCell>
-
-                    {/* Deadline cell */}
-                    <TableCell className="py-4 px-6 text-sm text-slate-500 font-medium">
-                      {project.deadline}
-                    </TableCell>
-
-                    {/* Actions cell */}
-                    <TableCell className="py-4 px-6 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => onViewProject(project)}
-                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                          title="View project details"
-                        >
-                          <Eye className="w-4 h-4 stroke-[2]" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            onDeleteProject(project.id);
-                            toast.success("Project deleted successfully");
-                          }}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
-                          title="Delete project"
-                        >
-                          <Trash2 className="w-4 h-4 stroke-[2]" />
-                        </button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+      {/* 3. Projects Table card using NRTable */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col w-full px-6 py-2">
+        <NRTable columns={columns} data={projects} emptyMessage="No projects available." />
 
         {/* Pagination bar */}
-        <div className="border-t border-slate-100 p-4 flex items-center justify-between bg-slate-50/20 text-xs text-slate-400 font-semibold select-none">
+        <div className="border-t border-slate-100 py-4 flex items-center justify-between bg-white text-xs text-slate-400 font-semibold select-none">
           <span>
             Showing 1-{projects.length} of 1,248 users
           </span>
