@@ -2,6 +2,7 @@
 
 import { NRTable } from "@/components/ui/core/NRTable";
 import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
 
 interface Creator {
   name: string;
@@ -69,9 +70,9 @@ const columns: ColumnDef<PayoutData>[] = [
     cell: () => {
       return (
         <div className="flex justify-start">
-          <button className="px-5 py-1.5 bg-[#2A2A2A] hover:bg-black text-white text-xs font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow active:scale-95 cursor-pointer">
+          <Button className="px-5 py-1.5 bg-[#2A2A2A] hover:bg-black text-white text-xs font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow active:scale-95 cursor-pointer">
             Review
-          </button>
+          </Button>
         </div>
       );
     },

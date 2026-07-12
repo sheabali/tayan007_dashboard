@@ -135,14 +135,13 @@ export default function ChangePassword() {
                         type={showCurrentPassword ? "text" : "password"}
                         placeholder="Enter your current password"
                         {...field}
-                        className={`py-3 pr-12 rounded-xl transition-colors ${
-                          errors.currentPassword
-                            ? "border-red-300 focus:border-red-500"
-                            : "border-gray-200 focus:border-blue-500"
-                        }`}
+                        className={`py-3 pr-12 rounded-xl transition-colors ${errors.currentPassword
+                          ? "border-red-300 focus:border-red-500"
+                          : "border-gray-200 focus:border-blue-500"
+                          }`}
                         autoComplete="current-password"
                       />
-                      <button
+                      <Button
                         type="button"
                         onClick={() => setShowCurrentPassword((prev) => !prev)}
                         className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 transition-colors"
@@ -153,7 +152,7 @@ export default function ChangePassword() {
                         ) : (
                           <Eye size={18} />
                         )}
-                      </button>
+                      </Button>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -175,16 +174,15 @@ export default function ChangePassword() {
                         type={showNewPassword ? "text" : "password"}
                         placeholder="Enter your new password"
                         {...field}
-                        className={`py-3 pr-12 rounded-xl transition-colors ${
-                          errors.newPassword || isSamePassword
-                            ? "border-red-300 focus:border-red-500"
-                            : watchNewPassword && !errors.newPassword
-                              ? "border-green-300 focus:border-green-500"
-                              : "border-gray-200 focus:border-blue-500"
-                        }`}
+                        className={`py-3 pr-12 rounded-xl transition-colors ${errors.newPassword || isSamePassword
+                          ? "border-red-300 focus:border-red-500"
+                          : watchNewPassword && !errors.newPassword
+                            ? "border-green-300 focus:border-green-500"
+                            : "border-gray-200 focus:border-blue-500"
+                          }`}
                         autoComplete="new-password"
                       />
-                      <button
+                      <Button
                         type="button"
                         onClick={() => setShowNewPassword((prev) => !prev)}
                         className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 transition-colors"
@@ -195,7 +193,7 @@ export default function ChangePassword() {
                         ) : (
                           <Eye size={18} />
                         )}
-                      </button>
+                      </Button>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -222,17 +220,16 @@ export default function ChangePassword() {
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Re-enter your new password"
                         {...field}
-                        className={`py-3 pr-12 rounded-xl transition-colors ${
-                          errors.confirmPassword
-                            ? "border-red-300 focus:border-red-500"
-                            : watchConfirmPassword &&
-                                watchNewPassword === watchConfirmPassword
-                              ? "border-green-300 focus:border-green-500"
-                              : "border-gray-200 focus:border-blue-500"
-                        }`}
+                        className={`py-3 pr-12 rounded-xl transition-colors ${errors.confirmPassword
+                          ? "border-red-300 focus:border-red-500"
+                          : watchConfirmPassword &&
+                            watchNewPassword === watchConfirmPassword
+                            ? "border-green-300 focus:border-green-500"
+                            : "border-gray-200 focus:border-blue-500"
+                          }`}
                         autoComplete="new-password"
                       />
-                      <button
+                      <Button
                         type="button"
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
                         className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 transition-colors"
@@ -243,7 +240,7 @@ export default function ChangePassword() {
                         ) : (
                           <Eye size={18} />
                         )}
-                      </button>
+                      </Button>
                     </div>
                   </FormControl>
                   <FormMessage />

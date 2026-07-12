@@ -5,6 +5,8 @@ import { NRTable } from "@/components/ui/core/NRTable";
 import { CustomSelect } from "@/components/ui/core/CustomSelect/CustomSelect";
 import { ColumnDef } from "@tanstack/react-table";
 import { Eye, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export interface UserItem {
   id: string;
@@ -138,15 +140,18 @@ const UserList = ({ users }: UserListProps) => {
     {
       id: "actions",
       header: "ACTIONS",
-      cell: () => {
+      cell: ({ row }) => {
+        const user = row.original;
         return (
           <div className="flex items-center gap-2">
-            <button className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer active:scale-90">
-              <Eye className="w-4 h-4 stroke-[2]" />
-            </button>
-            <button className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer active:scale-90">
+            <Link href={`/user/dashboard/users/${user.id}`}>
+              <Button className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer active:scale-90">
+                <Eye className="w-4 h-4 stroke-[2]" />
+              </Button>
+            </Link>
+            <Button className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer active:scale-90">
               <Trash2 className="w-4 h-4 stroke-[2]" />
-            </button>
+            </Button>
           </div>
         );
       },
@@ -159,26 +164,24 @@ const UserList = ({ users }: UserListProps) => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Toggle tabs */}
         <div className="flex bg-[#E2E8F0]/70 p-1.5 rounded-2xl w-fit shadow-inner">
-          <button
+          <Button
             onClick={() => setActiveTab("Client")}
-            className={`px-8 py-2 rounded-xl text-sm font-bold transition-all duration-300 cursor-pointer ${
-              activeTab === "Client"
+            className={`px-8 py-2 rounded-xl text-sm font-bold transition-all duration-300 cursor-pointer ${activeTab === "Client"
                 ? "bg-slate-800 text-white shadow-sm"
                 : "text-slate-500 hover:text-slate-800"
-            }`}
+              }`}
           >
             Clients
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setActiveTab("Creator")}
-            className={`px-8 py-2 rounded-xl text-sm font-bold transition-all duration-300 cursor-pointer ${
-              activeTab === "Creator"
+            className={`px-8 py-2 rounded-xl text-sm font-bold transition-all duration-300 cursor-pointer ${activeTab === "Creator"
                 ? "bg-slate-800 text-white shadow-sm"
                 : "text-slate-500 hover:text-slate-800"
-            }`}
+              }`}
           >
             Creators
-          </button>
+          </Button>
         </div>
 
         {/* Dropdowns */}
@@ -209,21 +212,21 @@ const UserList = ({ users }: UserListProps) => {
           </span>
 
           <div className="flex items-center gap-1.5">
-            <button className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+            <Button className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
               <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center text-xs font-extrabold bg-slate-800 text-white rounded-lg shadow-sm">
+            </Button>
+            <Button className="w-8 h-8 flex items-center justify-center text-xs font-extrabold bg-slate-800 text-white rounded-lg shadow-sm">
               1
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
+            </Button>
+            <Button className="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
               2
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
+            </Button>
+            <Button className="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
               3
-            </button>
-            <button className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer">
+            </Button>
+            <Button className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer">
               <ChevronRight className="w-4 h-4 stroke-[2.5]" />
-            </button>
+            </Button>
           </div>
         </div>
       </div>

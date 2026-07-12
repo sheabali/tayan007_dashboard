@@ -42,18 +42,17 @@ const TablePagination = ({
 
   return (
     <div className="flex items-center justify-end gap-3 p-8">
-      <button
+      <Button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={isFirstPage}
-        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-          isFirstPage
-            ? "text-gray-400 cursor-not-allowed"
-            : "text-gray-700 hover:bg-gray-100"
-        }`}
+        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${isFirstPage
+          ? "text-gray-400 cursor-not-allowed"
+          : "text-gray-700 hover:bg-gray-100"
+          }`}
       >
         <ArrowLeft className="w-4 h-4" />
         Previous
-      </button>
+      </Button>
 
       <div className="flex items-center gap-1">
         {getPageNumbers().map((page, index) =>
@@ -65,17 +64,16 @@ const TablePagination = ({
               ...
             </span>
           ) : (
-            <button
+            <Button
               key={page}
               onClick={() => onPageChange(page as number)}
-              className={`min-w-10 h-10 px-3 rounded-lg text-sm font-medium transition-all ${
-                currentPage === page
-                  ? "bg-primary text-white"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
+              className={`min-w-10 h-10 px-3 rounded-lg text-sm font-medium transition-all ${currentPage === page
+                ? "bg-primary text-white"
+                : "text-gray-600 hover:bg-gray-100"
+                }`}
             >
               {String(page).padStart(2, "0")}
-            </button>
+            </Button>
           )
         )}
       </div>
@@ -83,11 +81,10 @@ const TablePagination = ({
       <Button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={isLastPage}
-        className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all ${
-          isLastPage
-            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-            : "text-white font-semibold rounded-full shadow-md hover:opacity-90"
-        }`}
+        className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all ${isLastPage
+          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+          : "text-white font-semibold rounded-full shadow-md hover:opacity-90"
+          }`}
       >
         Next
         <ArrowRight className="w-4 h-4" />

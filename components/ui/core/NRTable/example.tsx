@@ -7,6 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { NRTable } from ".";
 import DeleteConfirmationModal from "../NRModal/DeleteConfirmationModal";
+import { Button } from "@/components/ui/button";
 
 const user = [
   {
@@ -101,7 +102,7 @@ const ExampleTable = () => {
       accessorKey: "action",
       cell: ({ row }) => (
         <>
-          <button
+          <Button
             onClick={() => {
               setSelectId(row.getValue("id"));
               setSelectedItem(row.getValue("name"));
@@ -110,8 +111,8 @@ const ExampleTable = () => {
             className="bg-green-500 text-white p-2 rounded-md font-semibold mr-2"
           >
             Edit
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => {
               setSelectId(row.getValue("id"));
               setSelectedItem(row.getValue("name"));
@@ -120,7 +121,7 @@ const ExampleTable = () => {
             className="bg-red-500 text-white p-2 rounded-md font-semibold"
           >
             Delete
-          </button>
+          </Button>
         </>
       ),
     },

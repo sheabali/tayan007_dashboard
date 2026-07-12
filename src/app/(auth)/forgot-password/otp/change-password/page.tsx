@@ -107,7 +107,7 @@ export default function ResetPassword() {
                           {...field}
                           className="py-6 pr-12 rounded-2xl"
                         />
-                        <button
+                        <Button
                           type="button"
                           onClick={toggleNewPassword}
                           className="absolute inset-y-0 right-4 flex items-center text-gray-500"
@@ -117,7 +117,7 @@ export default function ResetPassword() {
                           ) : (
                             <Eye size={20} />
                           )}
-                        </button>
+                        </Button>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -142,7 +142,7 @@ export default function ResetPassword() {
                           {...field}
                           className="py-6 pr-12 rounded-2xl"
                         />
-                        <button
+                        <Button
                           type="button"
                           onClick={toggleConfirmPassword}
                           className="absolute inset-y-0 right-4 flex items-center text-gray-500"
@@ -152,7 +152,7 @@ export default function ResetPassword() {
                           ) : (
                             <Eye size={20} />
                           )}
-                        </button>
+                        </Button>
                       </div>
                     </FormControl>
                     <FormMessage />
