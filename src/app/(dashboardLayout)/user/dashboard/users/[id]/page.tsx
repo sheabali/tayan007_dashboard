@@ -90,7 +90,7 @@ function ClientDetailsView({ user, id }: ClientDetailsViewProps) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link href="/user/dashboard/users">
-            <Button className="p-2 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all shadow-sm cursor-pointer active:scale-90">
+            <Button variant="ghost" className="p-2 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all shadow-sm cursor-pointer active:scale-90">
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
@@ -189,8 +189,9 @@ function ClientDetailsView({ user, id }: ClientDetailsViewProps) {
         {/* Tab Headers */}
         <div className="flex border-b border-slate-100">
           <Button
+            variant="ghost"
             onClick={() => setActiveTab("profile")}
-            className={`px-6 py-4 text-sm font-extrabold relative transition-colors cursor-pointer ${activeTab === "profile" ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
+            className={`px-6 py-4 text-sm font-extrabold relative transition-colors cursor-pointer rounded-none hover:bg-transparent ${activeTab === "profile" ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
               }`}
           >
             Profile Information
@@ -199,8 +200,9 @@ function ClientDetailsView({ user, id }: ClientDetailsViewProps) {
             )}
           </Button>
           <Button
+            variant="ghost"
             onClick={() => setActiveTab("activity")}
-            className={`px-6 py-4 text-sm font-extrabold relative transition-colors cursor-pointer ${activeTab === "activity" ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
+            className={`px-6 py-4 text-sm font-extrabold relative transition-colors cursor-pointer rounded-none hover:bg-transparent ${activeTab === "activity" ? "text-blue-600" : "text-slate-400 hover:text-slate-600"
               }`}
           >
             Recent Activity
@@ -325,7 +327,7 @@ function CreatorDetailsView({ user, id }: CreatorDetailsViewProps) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link href="/user/dashboard/users">
-            <Button className="p-2 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all shadow-sm cursor-pointer active:scale-90">
+            <Button variant="ghost" className="p-2 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all shadow-sm cursor-pointer active:scale-90">
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
@@ -541,6 +543,7 @@ function CreatorDetailsView({ user, id }: CreatorDetailsViewProps) {
                 <span className="text-xs font-bold text-slate-700">Verified Creator</span>
               </div>
               <Button
+                variant="ghost"
                 onClick={toggleVerification}
                 className="px-3 py-1 bg-white border border-slate-200 hover:border-slate-300 rounded-lg text-[10px] font-extrabold text-slate-600 transition-all active:scale-95 cursor-pointer shadow-sm"
               >
@@ -550,6 +553,7 @@ function CreatorDetailsView({ user, id }: CreatorDetailsViewProps) {
 
             {/* Suspend Account Button */}
             <Button
+              variant="ghost"
               onClick={toggleSuspend}
               className={`flex items-center justify-center gap-2 w-full py-3.5 border rounded-xl text-xs font-extrabold transition-all cursor-pointer active:scale-[0.98] ${userStatus === "suspended"
                 ? "bg-emerald-600 border-emerald-600 text-white hover:bg-emerald-500 shadow-md"

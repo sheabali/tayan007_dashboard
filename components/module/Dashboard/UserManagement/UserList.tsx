@@ -145,11 +145,11 @@ const UserList = ({ users }: UserListProps) => {
         return (
           <div className="flex items-center gap-2">
             <Link href={`/user/dashboard/users/${user.id}`}>
-              <Button className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer active:scale-90">
+              <Button variant="ghost" className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer active:scale-90">
                 <Eye className="w-4 h-4 stroke-[2]" />
               </Button>
             </Link>
-            <Button className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer active:scale-90">
+            <Button variant="ghost" className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer active:scale-90">
               <Trash2 className="w-4 h-4 stroke-[2]" />
             </Button>
           </div>
@@ -165,19 +165,21 @@ const UserList = ({ users }: UserListProps) => {
         {/* Toggle tabs */}
         <div className="flex bg-[#E2E8F0]/70 p-1.5 rounded-2xl w-fit shadow-inner">
           <Button
+            variant="ghost"
             onClick={() => setActiveTab("Client")}
             className={`px-8 py-2 rounded-xl text-sm font-bold transition-all duration-300 cursor-pointer ${activeTab === "Client"
-                ? "bg-slate-800 text-white shadow-sm"
-                : "text-slate-500 hover:text-slate-800"
+                ? "bg-slate-800 text-white hover:bg-slate-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-800 hover:bg-slate-100"
               }`}
           >
             Clients
           </Button>
           <Button
+            variant="ghost"
             onClick={() => setActiveTab("Creator")}
             className={`px-8 py-2 rounded-xl text-sm font-bold transition-all duration-300 cursor-pointer ${activeTab === "Creator"
-                ? "bg-slate-800 text-white shadow-sm"
-                : "text-slate-500 hover:text-slate-800"
+                ? "bg-slate-800 text-white hover:bg-slate-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-800 hover:bg-slate-100"
               }`}
           >
             Creators
@@ -212,19 +214,19 @@ const UserList = ({ users }: UserListProps) => {
           </span>
 
           <div className="flex items-center gap-1.5">
-            <Button className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+            <Button variant="ghost" className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
               <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
             </Button>
-            <Button className="w-8 h-8 flex items-center justify-center text-xs font-extrabold bg-slate-800 text-white rounded-lg shadow-sm">
+            <Button variant="ghost" className="w-8 h-8 flex items-center justify-center text-xs font-extrabold bg-slate-800 text-white rounded-lg shadow-sm">
               1
             </Button>
-            <Button className="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
+            <Button variant="ghost" className="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
               2
             </Button>
-            <Button className="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
+            <Button variant="ghost" className="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-500 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
               3
             </Button>
-            <Button className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer">
+            <Button variant="ghost" className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer">
               <ChevronRight className="w-4 h-4 stroke-[2.5]" />
             </Button>
           </div>
