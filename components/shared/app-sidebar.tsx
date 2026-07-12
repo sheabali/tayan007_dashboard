@@ -4,7 +4,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
 } from "@/components/ui/sidebar";
 import Logo from "@/src/assets/logo.png";
 import {
@@ -99,7 +98,6 @@ export default function AppSidebar({ role, ...props }: AppSidebarProps) {
       <SidebarFooter>
         <NavUser />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }
