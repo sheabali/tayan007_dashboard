@@ -8,11 +8,10 @@ import {
 } from "@/components/ui/sidebar";
 import Logo from "@/src/assets/logo.png";
 import {
-  HandCoins,
-  Home,
-  InfoIcon,
+  Boxes,
+  ClipboardList,
+  CreditCard,
   LayoutDashboard,
-  User,
   Users,
 } from "lucide-react";
 import Image from "next/image";
@@ -29,14 +28,9 @@ const data = {
         icon: LayoutDashboard,
       },
       {
-        title: "Your Profile",
-        url: "/user/dashboard/profile",
-        icon: User,
-      },
-      {
-        title: "Go Back To Home",
-        url: "/",
-        icon: Home,
+        title: "Users",
+        url: "/user/dashboard/users",
+        icon: Users,
       },
     ],
   },
@@ -50,40 +44,22 @@ const data = {
       {
         title: "Users",
         url: "/user/dashboard/users",
-        icon: HandCoins,
-        items: [
-          {
-            title: "Users",
-            url: "/user/dashboard/estimates",
-            icon: Users,
-          },
-          {
-            title: "Pending Users",
-            url: "/user/dashboard/pending-users",
-            icon: InfoIcon,
-          },
-        ],
+        icon: Users,
       },
       {
         title: "Applications",
-        url: "/admin/dashboard/applications",
-        icon: User,
+        url: "/admin/applications",
+        icon: ClipboardList,
       },
       {
         title: "Payment",
         url: "/admin/payment",
-        icon: User,
-      },
-
-      {
-        title: "Your Profile",
-        url: "/user/dashboard/profile",
-        icon: User,
+        icon: CreditCard,
       },
       {
-        title: "Go Back To Home",
-        url: "/",
-        icon: Home,
+        title: "Packages",
+        url: "/admin/packages",
+        icon: Boxes,
       },
     ],
   },
