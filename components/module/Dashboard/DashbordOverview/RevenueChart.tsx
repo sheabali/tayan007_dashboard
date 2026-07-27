@@ -51,9 +51,10 @@ const RevenueChart = ({ data = [] }: RevenueChartProps) => {
   };
 
   const linePath = getBezierPath();
-  const areaPath = points.length > 0 
-    ? `${linePath} L ${points[points.length - 1].x},${height - paddingBottom} L ${points[0].x},${height - paddingBottom} Z`
-    : "";
+  const areaPath =
+    points.length > 0
+      ? `${linePath} L ${points[points.length - 1].x},${height - paddingBottom} L ${points[0].x},${height - paddingBottom} Z`
+      : "";
 
   // Grid lines
   const gridTicks = [0, 20000, 40000, 60000, 80000];
@@ -61,15 +62,15 @@ const RevenueChart = ({ data = [] }: RevenueChartProps) => {
   return (
     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col h-full w-full">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-bold text-slate-800">Monthly Revenue</h3>
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#1D3E35]"></span>
-          <span className="text-xs text-slate-500 font-semibold">Revenue ($)</span>
-        </div>
+        <h3 className="text-lg text-slate-800">Monthly Revenue</h3>
       </div>
 
       <div className="relative flex-1 w-full min-h-[220px]">
-        <svg className="w-full h-full" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
+        <svg
+          className="w-full h-full"
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="none"
+        >
           <defs>
             <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#1D3E35" stopOpacity={0.08} />

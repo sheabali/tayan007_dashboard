@@ -1,8 +1,8 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { NRTable } from "@/components/ui/core/NRTable";
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
 
 interface Creator {
   name: string;
@@ -21,13 +21,15 @@ interface PayoutData {
 
 const columns: ColumnDef<PayoutData>[] = [
   {
-    accessorKey: "creator",
-    header: "CREATOR",
+    accessorKey: "professional",
+    header: "PROFESSIONAL",
     cell: ({ row }) => {
       const creator = row.original.creator;
       return (
         <div className="flex items-center gap-3 py-1">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs tracking-wider shrink-0 ${creator.avatarBg} ${creator.avatarText}`}>
+          <div
+            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs tracking-wider shrink-0 ${creator.avatarBg} ${creator.avatarText}`}
+          >
             {creator.initials}
           </div>
           <div className="flex flex-col">
@@ -70,7 +72,7 @@ const columns: ColumnDef<PayoutData>[] = [
     cell: () => {
       return (
         <div className="flex justify-start">
-          <Button className="px-5 py-1.5 bg-[#2A2A2A] hover:bg-black text-white text-xs font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow active:scale-95 cursor-pointer">
+          <Button className="px-5 py-1.5 bg-primary text-white text-xs font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow active:scale-95 cursor-pointer">
             Review
           </Button>
         </div>
@@ -87,7 +89,7 @@ const PendingPayouts = ({ data = [] }: PendingPayoutsProps) => {
   return (
     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm w-full">
       <div className="mb-4">
-        <h3 className="text-lg font-bold text-slate-800">Pending Payouts</h3>
+        <h3 className="text-lg text-slate-800">Pending Payouts</h3>
       </div>
       <NRTable columns={columns} data={data} />
     </div>

@@ -81,14 +81,14 @@ export default function AppSidebar({ role, ...props }: AppSidebarProps) {
       <SidebarHeader>
         <Link
           href={"/"}
-          className="flex items-center w-full max-h-40 justify-center"
+          className="flex items-center w-full max-h-40 justify-center my-10"
         >
           <Image
             src={Logo.src}
             alt="Logo"
-            width={300}
-            height={300}
-            className="size-auto "
+            width={500}
+            height={500}
+            // className="w-100px h-100px object-contain"
           />
         </Link>
       </SidebarHeader>

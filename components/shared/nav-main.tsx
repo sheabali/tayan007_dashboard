@@ -99,13 +99,13 @@ export function NavMain({
                 tooltip={item.title}
                 className={`${
                   isActive
-                    ? "bg-primary text-white hover:bg-primary/90 hover:text-white"
+                    ? "bg-primary rounded-none py-6 px-2.5 border-e-4 border-[#C19F32] text-white hover:bg-primary/90 hover:text-white"
                     : ""
                 }`}
               >
                 <Link href={item.url}>
-                  {item.icon && <item.icon className="mr-2 h-5 w-5" />}
-                  <span>{item.title}</span>
+                  {item.icon && <item.icon className="mr-2 h-8 w-8" />}
+                  <span className="text-md">{item.title}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
