@@ -72,7 +72,7 @@ const columns: ColumnDef<PayoutData>[] = [
     cell: () => {
       return (
         <div className="flex justify-start">
-          <Button className="px-5 py-1.5 bg-primary text-white text-xs font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow active:scale-95 cursor-pointer">
+          <Button className="px-5 py-1.5 bg-[#153427] hover:bg-[#0f251c] text-white text-xs font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow cursor-pointer">
             Review
           </Button>
         </div>
@@ -89,7 +89,7 @@ const PendingPayouts = ({ data = [] }: PendingPayoutsProps) => {
   return (
     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm w-full">
       <div className="mb-4">
-        <h3 className="text-lg text-slate-800">Pending Payouts</h3>
+        <h3 className="text-lg font-serif text-slate-800">Pending Payouts</h3>
       </div>
       <NRTable columns={columns} data={data} />
     </div>

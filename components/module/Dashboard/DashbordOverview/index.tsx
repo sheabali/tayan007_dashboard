@@ -6,7 +6,7 @@ import UserActivity, { ActivityItem } from "./UserActivity";
 const dummyMetrics: MetricItem[] = [
   {
     title: "Total Revenue",
-    value: "$24,500",
+    value: "CFA 24,500",
     type: "revenue",
   },
   {
@@ -85,8 +85,8 @@ const dummyPayouts = [
       name: "Sarah Lee",
       role: "Video Editing",
       initials: "SL",
-      avatarBg: "bg-emerald-100",
-      avatarText: "text-emerald-600",
+      avatarBg: "bg-slate-100",
+      avatarText: "text-slate-600",
     },
     amount: "$840.00",
     status: "AWAITING REVIEW",
@@ -109,11 +109,15 @@ const DashboardOverview = () => {
   return (
     <div className="flex flex-col gap-6 w-full">
       {/* Top Header Section */}
-      <div className="flex justify-between items-center w-full">
-        <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">
+      <div className="flex justify-between items-center w-full mb-2">
+        <h1 className="text-2xl font-serif text-slate-800">
           Dashboard Overview
         </h1>
         {/* User profile widget */}
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600"></div>
+          <span className="text-sm text-slate-800 font-medium">Admin User</span>
+        </div>
       </div>
 
       {/* Metric Cards Grid */}

@@ -62,7 +62,7 @@ const RevenueChart = ({ data = [] }: RevenueChartProps) => {
   return (
     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col h-full w-full">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg text-slate-800">Monthly Revenue</h3>
+        <h3 className="text-lg font-serif text-slate-800">Monthly Revenue</h3>
       </div>
 
       <div className="relative flex-1 w-full min-h-[220px]">
@@ -96,7 +96,7 @@ const RevenueChart = ({ data = [] }: RevenueChartProps) => {
                   x={paddingLeft - 8}
                   y={y + 3}
                   textAnchor="end"
-                  className="text-[9px] fill-slate-400 font-bold font-sans"
+                  className="text-xs fill-slate-400 font-sans"
                 >
                   {tick === 0 ? "0" : tick.toLocaleString()}
                 </text>
@@ -105,13 +105,13 @@ const RevenueChart = ({ data = [] }: RevenueChartProps) => {
           })}
 
           {/* Area Fill */}
-          <path d={areaPath} fill="url(#chartGradient)" />
+          {/* <path d={areaPath} fill="url(#chartGradient)" /> */}
 
           {/* Curved Line */}
           <path
             d={linePath}
             fill="none"
-            stroke="#1D3E35"
+            stroke="#1F2937"
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -134,7 +134,7 @@ const RevenueChart = ({ data = [] }: RevenueChartProps) => {
               <circle
                 cx={pt.x}
                 cy={pt.y}
-                r={hoveredIdx === idx ? 6 : 4.5}
+                r={4}
                 fill="#FFFFFF"
                 stroke="#8B5CF6"
                 strokeWidth={2}
@@ -150,7 +150,7 @@ const RevenueChart = ({ data = [] }: RevenueChartProps) => {
               x={pt.x}
               y={height - 6}
               textAnchor="middle"
-              className="text-[10px] fill-slate-400 font-bold font-sans"
+              className="text-xs fill-slate-400 font-sans"
             >
               {pt.month}
             </text>

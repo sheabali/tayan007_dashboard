@@ -18,7 +18,7 @@ interface UserActivityProps {
 const UserActivity = ({ activities = [] }: UserActivityProps) => {
   return (
     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col h-full w-full">
-      <h3 className="text-lg font-bold text-slate-800 mb-6">
+      <h3 className="text-lg font-serif text-slate-800 mb-6">
         Recent User Activity
       </h3>
 
@@ -40,7 +40,7 @@ const UserActivity = ({ activities = [] }: UserActivityProps) => {
                   {activity.action}
                 </div>
 
-                <span className="text-[11px] font-bold text-slate-400">
+                <span className="text-xs text-slate-400">
                   {activity.time}
                 </span>
               </div>

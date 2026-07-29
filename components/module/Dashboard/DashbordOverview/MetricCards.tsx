@@ -15,23 +15,23 @@ interface MetricCardsProps {
 const themeMap = {
   revenue: {
     icon: Ticket,
-    bg: "bg-[#ECFDF5]",
-    color: "text-[#10B981]",
+    bg: "bg-green-50",
+    color: "text-green-500",
   },
   users: {
     icon: Users,
-    bg: "bg-[#EFF6FF]",
-    color: "text-[#3B82F6]",
+    bg: "bg-blue-50",
+    color: "text-blue-500",
   },
   creators: {
     icon: PenTool,
-    bg: "bg-[#F5F3FF]",
-    color: "text-[#8B5CF6]",
+    bg: "bg-fuchsia-50",
+    color: "text-fuchsia-500",
   },
   applications: {
     icon: FileClock,
-    bg: "bg-[#FEF2F2]",
-    color: "text-[#EF4444]",
+    bg: "bg-red-50",
+    color: "text-red-500",
   },
 };
 
@@ -44,18 +44,18 @@ const MetricCards = ({ metrics }: MetricCardsProps) => {
         return (
           <div
             key={idx}
-            className="bg-white p-6 rounded-2xl border border-slate-100/80 shadow-sm flex items-center justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-1"
+            className="bg-white p-6 rounded-2xl border border-slate-100/80 shadow-sm flex items-center justify-between"
           >
             <div className="flex flex-col gap-1.5">
-              <span className="text-[14px] tracking-wider text-[#4A5565]">
+              <span className="text-sm text-slate-500">
                 {metric.title}
               </span>
-              <span className="text-[24px] font-semibold text-[#101828] tracking-tight">
+              <span className="text-2xl font-semibold text-slate-800">
                 {metric.value}
               </span>
             </div>
             <div
-              className={`p-3.5 rounded-xl ${theme.bg} ${theme.color} transition-transform duration-300 hover:scale-110`}
+              className={`p-3.5 rounded-xl ${theme.bg} ${theme.color}`}
             >
               <Icon className="w-6 h-6 stroke-2" />
             </div>
