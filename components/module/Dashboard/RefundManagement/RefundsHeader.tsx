@@ -4,7 +4,7 @@ import { useGetMeQuery } from "@/redux/api/authApi";
 import { useAppSelector } from "@/redux/hooks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default function PayoutsHeader() {
+export default function RefundsHeader() {
   const token = useAppSelector((state) => state.auth.token);
   const { data: userData } = useGetMeQuery({ skip: !token }) as any;
 
@@ -15,8 +15,8 @@ export default function PayoutsHeader() {
   return (
     <div className="flex justify-between items-center w-full">
       <div>
-        <span className="text-sm font-semibold text-slate-400 tracking-wide uppercase">
-          Payouts Management
+        <span className="text-xl md:text-2xl font-serif text-[#1e293b]">
+          Refund Management
         </span>
       </div>
 

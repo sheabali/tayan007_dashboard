@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,9 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { User, ShieldAlert, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
-import Image from "next/image";
 import Link from "next/link";
 
 interface PayoutItem {
@@ -23,6 +20,7 @@ interface PayoutItem {
   role: string;
   scheduledDate: string;
   amount: number;
+  formattedAmount?: string;
   bankName: string;
   accountNumber: string;
 }
@@ -39,14 +37,6 @@ export default function UpcomingPayouts({
   const [selectedPayout, setSelectedPayout] = useState<PayoutItem | null>(null);
   const [open, setOpen] = useState(false);
 
-  const formatCurrency = (val: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(val);
-  };
-
   const handleCardClick = (payout: PayoutItem) => {
     setSelectedPayout(payout);
     setOpen(true);
@@ -55,25 +45,21 @@ export default function UpcomingPayouts({
   const handleReleaseEarly = () => {
     if (!selectedPayout) return;
     onReleasePayout(selectedPayout.id);
-    toast.success(`Payout of ${formatCurrency(selectedPayout.amount)} released to ${selectedPayout.name}`);
+    toast.success(`Payout of ${selectedPayout.formattedAmount || selectedPayout.amount} released to ${selectedPayout.name}`);
     setOpen(false);
     setSelectedPayout(null);
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-100/80 shadow-sm flex flex-col justify-between h-full hover:shadow-md transition-all duration-300">
-      <div className="flex flex-col gap-6">
-        <div>
-          <h3 className="text-base font-bold text-slate-800 tracking-tight">
-            Upcoming Payouts
-          </h3>
-        </div>
+    <div className="bg-white p-6 rounded-2xl border border-slate-100/80 shadow-sm flex flex-col justify-between h-full">
+      <div className="flex flex-col gap-5">
+        <h3 className="text-[15px] font-bold text-slate-800 tracking-tight">
+          Upcoming Payouts
+        </h3>
 
-        {/* List of payouts */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {payouts.length === 0 ? (
-            <div className="text-center py-8 text-slate-400 font-semibold text-xs flex flex-col items-center gap-2">
-              <CheckCircle2 className="w-8 h-8 text-emerald-500 stroke-[1.5]" />
+            <div className="text-center py-8 text-slate-400 font-medium text-[13px]">
               All payouts released!
             </div>
           ) : (
@@ -81,35 +67,32 @@ export default function UpcomingPayouts({
               <div
                 key={payout.id}
                 onClick={() => handleCardClick(payout)}
-                className="flex items-center justify-between p-3 rounded-xl border border-slate-100/60 bg-slate-50/20 hover:bg-slate-50/80 hover:border-slate-200/80 transition-all duration-200 cursor-pointer group"
+                className="flex items-center justify-between p-4 rounded-xl border border-slate-100/40 bg-[#f4f6fa] hover:bg-[#ebf0f7] hover:border-slate-200 transition-all duration-200 cursor-pointer group"
               >
-                <div className="flex items-center gap-3">
-                  {/* Avatar */}
-                  <div className="relative w-9 h-9 rounded-full overflow-hidden border border-slate-200 shrink-0 shadow-xs">
-                    <Image
+                <div className="flex items-center gap-3.5">
+                  <div className="w-[38px] h-[38px] rounded-full overflow-hidden shrink-0">
+                    <img
                       src={payout.avatar}
                       alt={payout.name}
-                      fill
-                      className="object-cover"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                          e.currentTarget.src = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150";
+                      }}
                     />
-                    <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400">
-                      <User className="w-4 h-4" />
-                    </div>
                   </div>
 
-                  <div className="flex flex-col leading-tight">
-                    <span className="text-xs font-extrabold text-slate-800 group-hover:text-blue-600 transition-colors">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[13px] font-bold text-slate-800">
                       {payout.name}
                     </span>
-                    <span className="text-[10px] text-slate-400 font-semibold mt-0.5">
+                    <span className="text-[11px] text-slate-500 font-medium">
                       Scheduled: {payout.scheduledDate}
                     </span>
                   </div>
                 </div>
 
-                {/* Amount */}
-                <span className="text-xs font-extrabold text-blue-600">
-                  {formatCurrency(payout.amount)}
+                <span className="text-[13px] font-bold text-blue-600">
+                  {payout.formattedAmount}
                 </span>
               </div>
             ))
@@ -117,16 +100,15 @@ export default function UpcomingPayouts({
         </div>
       </div>
 
-      {/* Button at the bottom */}
-      <div className="mt-6">
+      <div className="mt-5">
         <Link href="/admin/payouts">
           <Button
             variant="outline"
-            onClick={() => toast.info("Opening all payout transactions...")}
-            className="w-full h-10 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-lg text-xs"
+            className="w-full h-11 border-[#2a3b32] text-[#2a3b32] hover:bg-slate-50 font-semibold rounded-[10px] text-[13px] transition-colors"
           >
             Manage All Creator Payouts
-          </Button></Link>
+          </Button>
+        </Link>
       </div>
 
       {/* Payout Details Modal */}
@@ -143,23 +125,20 @@ export default function UpcomingPayouts({
             </DialogHeader>
 
             <div className="flex flex-col gap-4 py-4 border-y border-slate-50 my-2">
-              {/* Creator details */}
               <div className="flex items-center gap-3">
                 <div className="relative w-11 h-11 rounded-full overflow-hidden border border-slate-200">
-                  <Image
+                  <img
                     src={selectedPayout.avatar}
                     alt={selectedPayout.name}
-                    fill
-                    className="object-cover"
+                    className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="flex flex-col leading-none">
+                <div className="flex flex-col leading-none gap-1">
                   <span className="text-sm font-bold text-slate-800">{selectedPayout.name}</span>
-                  <span className="text-xs text-slate-400 font-medium mt-1">{selectedPayout.role}</span>
+                  <span className="text-xs text-slate-400 font-medium">{selectedPayout.role}</span>
                 </div>
               </div>
 
-              {/* Payout specifications */}
               <div className="grid grid-cols-2 gap-4 mt-2">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Scheduled Date</span>
@@ -167,7 +146,7 @@ export default function UpcomingPayouts({
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Payout Amount</span>
-                  <span className="text-xs font-extrabold text-blue-600">{formatCurrency(selectedPayout.amount)}</span>
+                  <span className="text-xs font-extrabold text-blue-600">{selectedPayout.formattedAmount}</span>
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Recipient Bank</span>
