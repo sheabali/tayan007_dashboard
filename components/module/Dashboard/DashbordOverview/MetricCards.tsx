@@ -1,6 +1,6 @@
 "use client";
 
-import { Ticket, Users, PenTool, FileClock } from "lucide-react";
+import { FileClock, PenTool, Ticket, Users } from "lucide-react";
 
 export interface MetricItem {
   title: string;
@@ -47,15 +47,17 @@ const MetricCards = ({ metrics }: MetricCardsProps) => {
             className="bg-white p-6 rounded-2xl border border-slate-100/80 shadow-sm flex items-center justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-1"
           >
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <span className="text-[14px] tracking-wider text-[#4A5565]">
                 {metric.title}
               </span>
-              <span className="text-3xl font-extrabold text-slate-800 tracking-tight">
+              <span className="text-[24px] font-semibold text-[#101828] tracking-tight">
                 {metric.value}
               </span>
             </div>
-            <div className={`p-3.5 rounded-xl ${theme.bg} ${theme.color} transition-transform duration-300 hover:scale-110`}>
-              <Icon className="w-6 h-6 stroke-[2]" />
+            <div
+              className={`p-3.5 rounded-xl ${theme.bg} ${theme.color} transition-transform duration-300 hover:scale-110`}
+            >
+              <Icon className="w-6 h-6 stroke-2" />
             </div>
           </div>
         );
