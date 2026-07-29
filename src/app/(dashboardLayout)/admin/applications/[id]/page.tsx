@@ -3,19 +3,15 @@
 import { use, useState } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft,
-  Mail,
-  Calendar,
   MapPin,
-  Globe,
-  Phone,
+  Building2,
+  Briefcase,
+  FolderOpen,
+  Eye,
   CheckCircle2,
-  Ban,
-  Clock,
-  Camera,
-  Video,
-  Cpu,
-  AlertTriangle
+  ExternalLink,
+  AlertTriangle,
+  Check
 } from "lucide-react";
 import { mockApplicants } from "@/components/module/Dashboard/Applications/mockData";
 import { Button } from "@/components/ui/button";
@@ -26,11 +22,8 @@ interface PageProps {
 
 export default function ApplicationReviewPage({ params }: PageProps) {
   const { id } = use(params);
-
-  // Find applicant by ID
   const applicant = mockApplicants.find((a) => a.id === id);
 
-  // Fallback if not found
   if (!applicant) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] gap-4 p-6 text-center">
@@ -48,20 +41,14 @@ export default function ApplicationReviewPage({ params }: PageProps) {
     );
   }
 
-  return (
-    <ApplicationReviewDetailsView applicant={applicant} />
-  );
+  return <ApplicationReviewDetailsView applicant={applicant} />;
 }
 
-// APPLICATION DETAILS VIEW COMPONENT
 interface ApplicationReviewDetailsViewProps {
   applicant: typeof mockApplicants[0];
 }
 
 function ApplicationReviewDetailsView({ applicant }: ApplicationReviewDetailsViewProps) {
-  // Local state for interactive buttons
-  const [isApproved, setIsApproved] = useState(false);
-  const [isSuspended, setIsSuspended] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const triggerToast = (msg: string) => {
@@ -69,20 +56,8 @@ function ApplicationReviewDetailsView({ applicant }: ApplicationReviewDetailsVie
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleApprove = () => {
-    if (isApproved) return;
-    setIsApproved(true);
-    triggerToast("Application Approved successfully!");
-  };
-
-  const handleSuspend = () => {
-    setIsSuspended(prev => !prev);
-    triggerToast(isSuspended ? "Creator suspension lifted." : "Creator account has been suspended.");
-  };
-
   return (
-    <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto p-4 mb-20 relative">
-
+    <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto p-4 mb-20 font-sans">
       {/* Toast Alert Box */}
       {toastMessage && (
         <div className="fixed top-6 right-6 bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded-xl shadow-2xl z-50 border border-slate-800 flex items-center gap-2 animate-bounce">
@@ -91,18 +66,24 @@ function ApplicationReviewDetailsView({ applicant }: ApplicationReviewDetailsVie
         </div>
       )}
 
-      {/* Header and Back Button */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Header */}
+      <div className="flex justify-between items-center w-full mb-2">
+        <h1 className="text-[32px] font-serif text-[#1e2a3b] tracking-tight">
+          Application Review: {applicant.name}
+        </h1>
         <div className="flex items-center gap-3">
-          <Link href="/admin/applications">
-            <Button variant="ghost" className="p-2 bg-white border border-slate-100 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all shadow-sm cursor-pointer active:scale-90">
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-          </Link>
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-purple-500 shadow-sm shrink-0"></div>
+          <span className="text-sm font-medium text-slate-700">Admin User</span>
+        </div>
+      </div>
 
-          {/* Avatar and name in header */}
-          <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-full overflow-hidden border border-slate-100 shadow-sm shrink-0">
+      {/* Top Row Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Double Column */}
+        <div className="lg:col-span-2 flex flex-col gap-6">
+          {/* Profile Card */}
+          <div className="bg-white p-6 sm:p-8 rounded-[24px] shadow-sm flex flex-col sm:flex-row gap-8 border border-slate-100">
+            <div className="w-32 h-32 rounded-2xl overflow-hidden shrink-0 border border-slate-100">
               <img
                 src={applicant.avatarUrl}
                 alt={applicant.name}
@@ -112,288 +93,226 @@ function ApplicationReviewDetailsView({ applicant }: ApplicationReviewDetailsVie
                 }}
               />
             </div>
-            <div className="flex flex-col">
-              <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight leading-none animate-fade-in">
-                {applicant.name}
-              </h1>
-              <span className="text-xs font-bold text-slate-400 mt-1.5 leading-none">
-                {applicant.title} • {applicant.location}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Admin profile widget */}
-        <div className="flex items-center gap-3 bg-white pl-3 pr-4 py-1.5 rounded-full border border-slate-100 shadow-sm w-fit self-end md:self-auto">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-extrabold text-xs shadow-sm border border-white">
-            AU
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-bold text-slate-700 leading-none">Admin User</span>
-          </div>
-        </div>
-      </div>
-
-      {/* KPI Performance Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
-          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Jobs Completed</span>
-          <span className="text-2xl font-extrabold text-slate-800 mt-3 leading-none">{applicant.jobsCompleted}</span>
-        </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
-          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Average Rating</span>
-          <span className="text-2xl font-extrabold text-slate-800 mt-3 leading-none">
-            {applicant.averageRating} <span className="text-xs font-semibold text-slate-400">/ 5.0</span>
-          </span>
-        </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
-          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Response Time</span>
-          <span className="text-2xl font-extrabold text-slate-800 mt-3 leading-none">{applicant.responseTime}</span>
-        </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
-          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Completion Rate</span>
-          <span className="text-2xl font-extrabold text-slate-800 mt-3 leading-none">{applicant.completionRate}</span>
-        </div>
-      </div>
-
-      {/* Main Split Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        {/* Left Double-Column Block */}
-        <div className="lg:col-span-2 flex flex-col gap-6">
-
-          {/* Profile Overview */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
-            <h2 className="text-base font-extrabold text-slate-800 tracking-tight mb-4">Profile Overview</h2>
-            <p className="text-sm font-medium text-slate-500 leading-relaxed mb-6">
-              {applicant.overview}
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-50 pt-5">
-              <div className="flex items-center gap-3">
-                <div className="p-1.5 rounded-lg bg-blue-50/50 border border-blue-50 shrink-0">
-                  <MapPin className="w-4 h-4 text-blue-500" />
-                </div>
+            <div className="flex flex-col justify-between w-full">
+              <div className="flex justify-between items-start w-full">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase leading-none">Location</span>
-                  <span className="text-xs font-bold text-slate-700 mt-1 leading-none">{applicant.location}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="p-1.5 rounded-lg bg-indigo-50/50 border border-indigo-50 shrink-0">
-                  <Calendar className="w-4 h-4 text-indigo-500" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase leading-none">Applied Date</span>
-                  <span className="text-xs font-bold text-slate-700 mt-1 leading-none">{applicant.appliedDate}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="p-1.5 rounded-lg bg-emerald-50/50 border border-emerald-50 shrink-0">
-                  <Mail className="w-4 h-4 text-emerald-500" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase leading-none">Email Address</span>
-                  <span className="text-xs font-bold text-slate-700 mt-1 leading-none">e.rodriguez@valleycreative.com</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="p-1.5 rounded-lg bg-purple-50/50 border border-purple-50 shrink-0">
-                  <Phone className="w-4 h-4 text-purple-500" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase leading-none">Phone Number</span>
-                  <span className="text-xs font-bold text-slate-700 mt-1 leading-none">+1 (310) 555-0192</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Portfolio Highlights */}
-          {applicant.portfolio && applicant.portfolio.length > 0 && (
-            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-              <h2 className="text-base font-extrabold text-slate-800 tracking-tight mb-4">Portfolio Highlights</h2>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div className="col-span-2 row-span-2 relative aspect-[3/4] overflow-hidden rounded-2xl shadow-inner border border-slate-100">
-                  <img
-                    src={applicant.portfolio[0]}
-                    alt="Portfolio Spotlight"
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                  />
-                </div>
-                {applicant.portfolio[1] && (
-                  <div className="relative aspect-square overflow-hidden rounded-2xl shadow-inner border border-slate-100">
-                    <img
-                      src={applicant.portfolio[1]}
-                      alt="Portfolio Item 2"
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
+                  <h2 className="text-[26px] font-medium text-[#0d4732] leading-none">
+                    {applicant.name}
+                  </h2>
+                  <div className="flex items-center gap-1.5 mt-2.5 text-slate-600 text-[15px]">
+                    <CheckCircle2 className="w-4 h-4 text-slate-500" />
+                    <span>Professional Member</span>
                   </div>
-                )}
-                {applicant.portfolio[2] && (
-                  <div className="relative aspect-square overflow-hidden rounded-2xl shadow-inner border border-slate-100">
-                    <img
-                      src={applicant.portfolio[2]}
-                      alt="Portfolio Item 3"
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                  </div>
-                )}
-                {applicant.portfolio[3] && (
-                  <div className="relative aspect-square overflow-hidden rounded-2xl shadow-inner border border-slate-100">
-                    <img
-                      src={applicant.portfolio[3]}
-                      alt="Portfolio Item 4"
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                  </div>
-                )}
-                {applicant.portfolio[4] && (
-                  <div className="relative aspect-square overflow-hidden rounded-2xl shadow-inner border border-slate-100">
-                    <img
-                      src={applicant.portfolio[4]}
-                      alt="Portfolio Item 5"
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                  </div>
-                )}
-                {applicant.portfolio[5] && (
-                  <div className="relative aspect-square overflow-hidden rounded-2xl shadow-inner border border-slate-100">
-                    <img
-                      src={applicant.portfolio[5]}
-                      alt="Portfolio Item 6"
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                  </div>
-                )}
+                </div>
+                <span className="text-[15px] text-slate-500">
+                  Joined June 12, 2023
+                </span>
               </div>
-            </div>
-          )}
-
-          {/* Equipment Inventory */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-            <h2 className="text-base font-extrabold text-slate-800 tracking-tight mb-4">Equipment Inventory</h2>
-            <div className="flex flex-col gap-2">
-              {applicant.equipment.map((item, idx) => {
-                const isCamera = item.toLowerCase().includes("camera") || item.toLowerCase().includes("sony") || item.toLowerCase().includes("fujifilm") || item.toLowerCase().includes("lens") || item.toLowerCase().includes("nikon") || item.toLowerCase().includes("canon");
-                const isVideo = item.toLowerCase().includes("drone") || item.toLowerCase().includes("komodo") || item.toLowerCase().includes("ronin") || item.toLowerCase().includes("mic") || item.toLowerCase().includes("komodo") || item.toLowerCase().includes("go-pro");
-
-                return (
-                  <div key={idx} className="flex items-center gap-3 bg-slate-50 border border-slate-100 px-4 py-3 rounded-xl text-slate-700 text-xs font-bold hover:bg-slate-100/50 transition-colors">
-                    {isCamera ? (
-                      <Camera className="w-4 h-4 text-slate-400 shrink-0" />
-                    ) : isVideo ? (
-                      <Video className="w-4 h-4 text-slate-400 shrink-0" />
-                    ) : (
-                      <Cpu className="w-4 h-4 text-slate-400 shrink-0" />
-                    )}
-                    <span>{item}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Admin Controls / summaries Column */}
-        <div className="flex flex-col gap-6">
-
-          {/* Admin Control (Review Specific) */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-4">Admin Control</span>
-
-            {/* Approve Application Button */}
-            <Button
-              variant="ghost"
-              onClick={handleApprove}
-              disabled={isApproved}
-              className={`flex items-center justify-center gap-2 w-full py-3.5 border rounded-xl text-xs font-extrabold transition-all cursor-pointer shadow-sm active:scale-[0.98] ${isApproved
-                  ? "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed"
-                  : "bg-emerald-500 hover:bg-emerald-600 border-emerald-500 text-white"
-                }`}
-            >
-              <CheckCircle2 className="w-4 h-4" />
-              {isApproved ? "Approved" : "Approve Application"}
-            </Button>
-
-            {/* Suspend Account Button */}
-            <Button
-              variant="ghost"
-              onClick={handleSuspend}
-              className={`flex items-center justify-center gap-2 w-full py-3.5 border rounded-xl text-xs font-extrabold transition-all cursor-pointer mt-3 active:scale-[0.98] ${isSuspended
-                  ? "bg-emerald-600 border-emerald-600 text-white hover:bg-emerald-500 shadow-md"
-                  : "bg-white border-rose-200 hover:border-rose-300 hover:bg-rose-50/50 text-rose-500"
-                }`}
-            >
-              <Ban className="w-4 h-4" />
-              {isSuspended ? "Activate Creator" : "Suspend Creator"}
-            </Button>
-          </div>
-
-          {/* Payout Summary */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-4">Payout Summary</span>
-
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-400">Total Earned</span>
-                <span className="text-sm font-extrabold text-slate-800">{applicant.payoutSummary.totalEarned}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-400">Pending Payout</span>
-                <span className="text-sm font-extrabold text-blue-600">{applicant.payoutSummary.pendingPayout}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-400">Platform Fees</span>
-                <span className="text-sm font-extrabold text-slate-800">{applicant.payoutSummary.platformFees}</span>
-              </div>
-
-              {/* Last Payout Block */}
-              <div className="flex items-center gap-3 bg-slate-50 border border-slate-100 p-3 rounded-xl mt-3">
-                <Clock className="w-4 h-4 text-slate-400 shrink-0" />
-                <div className="flex flex-col">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase leading-none">Last Payout</span>
-                  <span className="text-xs font-extrabold text-slate-700 mt-1 leading-none">
-                    {applicant.payoutSummary.lastPayout.date} • {applicant.payoutSummary.lastPayout.amount}
+              <div className="flex gap-12 mt-8">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[12px] font-medium text-slate-500 tracking-wider uppercase">
+                    Email Address
+                  </span>
+                  <span className="text-[15px] font-medium text-slate-800">
+                    {applicant.name.toLowerCase().split(" ")[0]}@structura.com
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[12px] font-medium text-slate-500 tracking-wider uppercase">
+                    Phone Number
+                  </span>
+                  <span className="text-[15px] font-medium text-slate-800">
+                    +234 812 345 6789
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Service Areas */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
-            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-4">Service Areas</span>
-
-            {/* Map Placeholders */}
-            <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 mb-4 bg-slate-100 shadow-inner group">
-              <img
-                src={applicant.serviceAreas.mapUrl}
-                alt="Service Location Map"
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-slate-900/5 flex items-center justify-center">
-                <div className="w-3.5 h-3.5 bg-blue-600 rounded-full border-2 border-white ring-4 ring-blue-600/30 animate-pulse shadow-md" />
+          {/* Business Details & Expertise */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="bg-white p-7 rounded-[24px] shadow-sm border border-slate-100 flex flex-col">
+              <div className="flex items-center gap-2.5 mb-8">
+                <Building2 className="w-[22px] h-[22px] text-[#0d4732]" />
+                <h3 className="text-[20px] font-medium text-[#0d4732]">Business Details</h3>
               </div>
+              <span className="text-[12px] font-medium text-slate-500 tracking-wider uppercase mb-1.5">
+                Business Name
+              </span>
+              <span className="text-[16px] font-bold text-[#0d4732]">
+                Structura Engineering Ltd
+              </span>
             </div>
-
-            {/* Region Details */}
-            <span className="text-xs font-extrabold text-slate-700 leading-snug">Primary Region</span>
-            <span className="text-xs font-medium text-slate-500 mt-1 leading-relaxed">{applicant.serviceAreas.region}</span>
-
-            {/* Place Badges */}
-            <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-slate-50">
-              {applicant.serviceAreas.places.map((place, idx) => (
-                <span key={idx} className="px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[10px] font-bold text-slate-600 hover:bg-slate-100 transition-colors select-none">
-                  {place}
-                </span>
-              ))}
+            <div className="bg-white p-7 rounded-[24px] shadow-sm border border-slate-100 flex flex-col">
+              <div className="flex items-center gap-2.5 mb-8">
+                <Briefcase className="w-[20px] h-[20px] text-[#0d4732]" />
+                <h3 className="text-[13px] font-bold tracking-widest uppercase text-[#0d4732]">Expertise</h3>
+              </div>
+              <span className="text-[12px] font-medium text-slate-500 tracking-wider uppercase mb-1.5">
+                Years of Experience
+              </span>
+              <span className="text-[16px] font-bold text-[#0d4732]">8+ Years</span>
             </div>
           </div>
-
         </div>
 
+        {/* Verification Docs Column */}
+        <div className="bg-white p-7 rounded-[24px] shadow-sm border border-slate-100 flex flex-col h-full">
+          <div className="flex items-center gap-2.5 mb-8">
+            <FolderOpen className="w-[22px] h-[22px] text-[#0d4732]" />
+            <h3 className="text-[22px] font-medium text-[#0d4732]">Verification Docs</h3>
+          </div>
+          <div className="flex flex-col gap-4">
+            {[
+              { title: "Government ID", sub: "Passports_ElenaV.pdf" },
+              { title: "Professional License", sub: "COREN_Cert_2023.pdf" },
+              { title: "Business Registration", sub: "CAC_Registration.pdf" },
+            ].map((doc, i) => (
+              <div
+                key={i}
+                className="flex justify-between items-center p-4 rounded-[16px] border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer group"
+              >
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[15px] font-medium text-[#0d4732]">{doc.title}</span>
+                  <span className="text-[12px] text-slate-500">{doc.sub}</span>
+                </div>
+                <Eye className="w-[20px] h-[20px] text-[#0d4732] opacity-80" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Middle Row Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Location Info */}
+        <div className="bg-white p-7 rounded-[24px] shadow-sm border border-slate-100 flex flex-col">
+          <div className="flex items-center gap-2.5 mb-6">
+            <MapPin className="w-5 h-5 text-[#0d4732]" />
+            <h3 className="text-[13px] font-bold tracking-widest uppercase text-[#0d4732]">Location Info</h3>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <span className="text-[15px] text-slate-500">Country</span>
+              <span className="text-[15px] font-bold text-slate-900">Nigeria</span>
+            </div>
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <span className="text-[15px] text-slate-500">State</span>
+              <span className="text-[15px] font-bold text-slate-900">Lagos</span>
+            </div>
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <span className="text-[15px] text-slate-500">City</span>
+              <span className="text-[15px] font-bold text-slate-900">Lekki</span>
+            </div>
+          </div>
+          <span className="text-[14px] text-slate-500 mt-5 mb-3">Service Areas</span>
+          <div className="flex gap-2.5">
+            {["Lekki", "VI", "Ikoyi"].map((area) => (
+              <span
+                key={area}
+                className="px-3 py-1 bg-slate-100 rounded-full text-[12px] font-medium text-slate-700"
+              >
+                {area}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Guarantor Information */}
+        <div className="bg-white p-7 rounded-[24px] shadow-sm border border-slate-100 flex flex-col justify-between">
+          <div>
+            <h3 className="text-[22px] font-medium text-[#0d4732] leading-tight mb-8">
+              Guarantor
+              <br />
+              Information
+            </h3>
+            <div className="flex justify-between items-start mb-8">
+              <div className="flex flex-col gap-1">
+                <span className="text-[15px] font-bold text-[#0d4732]">Engr. Samuel Okoro</span>
+                <span className="text-[13px] font-medium text-slate-500">
+                  Former Employer / Mentor
+                </span>
+              </div>
+              <div className="w-6 h-6 rounded-full bg-[#0d4732] flex items-center justify-center shrink-0">
+                  <Check className="w-4 h-4 text-white" strokeWidth={3} />
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[14px] text-slate-500 mb-1">Contact Details</span>
+            <span className="text-[15px] font-bold text-[#0d4732]">s.okoro@probuild.com</span>
+            <span className="text-[15px] font-bold text-[#0d4732]">+234 809 123 4567</span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="bg-white p-7 rounded-[24px] shadow-sm border border-slate-100 flex flex-col">
+          <h3 className="text-[22px] font-medium text-[#0d4732] mb-6">Actions</h3>
+          <div className="flex flex-col gap-4">
+            <Button
+              onClick={() => triggerToast("Application Approved")}
+              className="w-full h-[52px] bg-[#22c55e] hover:bg-[#16a34a] text-white text-[16px] font-medium rounded-[12px] shadow-none"
+            >
+              Approve
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => triggerToast("Application Rejected")}
+              className="w-full h-[52px] bg-red-50/30 border border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 text-[16px] font-medium rounded-[12px] shadow-none"
+            >
+              Reject
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Row Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Project Portfolio */}
+        <div className="bg-white p-7 rounded-[24px] shadow-sm border border-slate-100 flex flex-col lg:col-span-2 w-full">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-[22px] font-medium text-[#0d4732]">Project Portfolio</h3>
+            <Link
+              href="#"
+              className="text-[14px] font-medium text-[#0d4732] flex items-center gap-1.5 hover:underline"
+            >
+              View Full Portfolio <ExternalLink className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                title: "Lekki Heights Tower",
+                date: "Completed 2022",
+                img: applicant.portfolio[0] || "/images/portfolio_main.png",
+              },
+              {
+                title: "Epe Logistics Hub",
+                date: "Completed 2021",
+                img: applicant.portfolio[1] || "/images/portfolio_forest.png",
+              },
+              {
+                title: "VI Waterfront Villa",
+                date: "Completed 2023",
+                img: applicant.portfolio[2] || "/images/portfolio_warm.png",
+              },
+            ].map((project, i) => (
+              <div key={i} className="flex flex-col gap-3">
+                <div className="w-full aspect-[4/3] rounded-[16px] overflow-hidden border border-slate-100">
+                  <img
+                    src={project.img}
+                    alt={project.title}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[15px] font-medium text-[#0d4732]">{project.title}</span>
+                  <span className="text-[12px] text-slate-500 mt-0.5">{project.date}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
