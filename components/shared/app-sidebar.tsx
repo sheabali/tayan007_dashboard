@@ -7,11 +7,14 @@ import {
 } from "@/components/ui/sidebar";
 import Logo from "@/src/assets/logo.png";
 import {
-  Boxes,
-  ClipboardList,
+  ClipboardCheck,
   CreditCard,
   LayoutDashboard,
   Users,
+  Briefcase,
+  AlertTriangle,
+  MapPin,
+  Workflow
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,7 +51,12 @@ const data = {
       {
         title: "Applications",
         url: "/admin/applications",
-        icon: ClipboardList,
+        icon: ClipboardCheck,
+      },
+      {
+        title: "Jobs",
+        url: "/admin/jobs",
+        icon: Briefcase,
       },
       {
         title: "Payment",
@@ -56,9 +64,19 @@ const data = {
         icon: CreditCard,
       },
       {
-        title: "Packages",
-        url: "/admin/packages",
-        icon: Boxes,
+        title: "Disputes",
+        url: "/admin/disputes",
+        icon: AlertTriangle,
+      },
+      {
+        title: "Location",
+        url: "/admin/location",
+        icon: MapPin,
+      },
+      {
+        title: "Categories",
+        url: "/admin/categories",
+        icon: Workflow,
       },
     ],
   },
