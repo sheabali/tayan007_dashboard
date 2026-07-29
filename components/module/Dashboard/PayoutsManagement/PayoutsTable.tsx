@@ -56,7 +56,7 @@ export default function PayoutsTable({
   const getStatusBadgeStyle = (status: Payout["status"]) => {
     switch (status) {
       case "COMPLETED":
-        return "bg-emerald-100 text-emerald-800 border-emerald-300";
+        return "bg-emerald-50 text-emerald-600 border-emerald-200/50 hover:bg-emerald-50 rounded-md font-bold text-[10px] tracking-wider py-0.5 px-2";
       case "APPROVED":
         return "bg-emerald-50 text-emerald-600 border-emerald-200/50 hover:bg-emerald-50 rounded-md font-bold text-[10px] tracking-wider py-0.5 px-2";
       case "PENDING REVIEW":
