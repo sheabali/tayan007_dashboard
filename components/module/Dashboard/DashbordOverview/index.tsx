@@ -115,7 +115,7 @@ const DashboardOverview = () => {
         </h1>
         {/* User profile widget */}
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600"></div>
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-purple-500"></div>
           <span className="text-sm text-slate-800 font-medium">Admin User</span>
         </div>
       </div>

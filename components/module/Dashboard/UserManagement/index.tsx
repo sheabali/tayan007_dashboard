@@ -14,7 +14,7 @@ const UserManagementModule = () => {
         </h1>
         {/* User profile widget */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-indigo-500 shrink-0"></div>
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-purple-500 shrink-0"></div>
           <span className="text-sm font-medium text-slate-700">Admin User</span>
         </div>
       </div>
