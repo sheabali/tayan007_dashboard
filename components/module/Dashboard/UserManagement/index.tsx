@@ -6,14 +6,17 @@ import { mockStats, mockUsers } from "./mockData";
 
 const UserManagementModule = () => {
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-8 w-full">
       {/* Top Header Section */}
-      <div className="flex justify-between items-center w-full">
-        <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">
+      <div className="flex justify-between items-center w-full mb-2">
+        <h1 className="text-3xl font-serif text-[#1e293b] tracking-wide">
           User Managements
         </h1>
         {/* User profile widget */}
-
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-indigo-500 shrink-0"></div>
+          <span className="text-sm font-medium text-slate-700">Admin User</span>
+        </div>
       </div>
 
       {/* User Stats Grid */}

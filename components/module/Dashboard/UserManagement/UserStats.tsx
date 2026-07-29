@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, PenTool, UserPlus, FileClock } from "lucide-react";
+import { Users, Wand2, UserPlus, FileSearch } from "lucide-react";
 
 export interface UserStatItem {
   title: string;
@@ -19,9 +19,9 @@ const themeMap = {
     color: "text-[#3B82F6]",
   },
   creators: {
-    icon: PenTool,
-    bg: "bg-[#F5F3FF]", // Soft purple
-    color: "text-[#8B5CF6]",
+    icon: Wand2,
+    bg: "bg-[#FDF2F8]", // Soft pink
+    color: "text-[#EC4899]",
   },
   signups: {
     icon: UserPlus,
@@ -29,7 +29,7 @@ const themeMap = {
     color: "text-[#10B981]",
   },
   applications: {
-    icon: FileClock,
+    icon: FileSearch,
     bg: "bg-[#FEF2F2]", // Soft red
     color: "text-[#EF4444]",
   },
@@ -44,17 +44,17 @@ const UserStats = ({ stats }: UserStatsProps) => {
         return (
           <div
             key={idx}
-            className="bg-white p-6 rounded-2xl border border-slate-100/80 shadow-sm flex items-center justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-1"
+            className="bg-white p-6 rounded-[20px] shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex items-center justify-between"
           >
-            <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium text-slate-500">
                 {stat.title}
               </span>
-              <span className="text-3xl font-extrabold text-slate-800 tracking-tight">
+              <span className="text-[28px] font-semibold text-slate-800 leading-tight">
                 {stat.value}
               </span>
             </div>
-            <div className={`p-3.5 rounded-xl ${theme.bg} ${theme.color} transition-transform duration-300 hover:scale-110`}>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${theme.bg} ${theme.color}`}>
               <Icon className="w-6 h-6 stroke-[2]" />
             </div>
           </div>

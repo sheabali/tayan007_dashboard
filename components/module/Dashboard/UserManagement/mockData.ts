@@ -70,7 +70,7 @@ export const mockStats: UserStatItem[] = [
     type: "clients",
   },
   {
-    title: "Active Creators",
+    title: "Active Professionals",
     value: "458",
     type: "creators",
   },
