@@ -99,13 +99,20 @@ export function NavMain({
                 tooltip={item.title}
                 className={`${
                   isActive
-                    ? "bg-primary rounded-none py-6 px-2.5 border-e-4 border-[#C19F32] text-white hover:bg-primary/90 hover:text-white"
-                    : ""
+                    ? "bg-[#114232] rounded-none py-6 px-6 border-e-[4px] border-[#cda23a] text-white hover:bg-[#114232]/90 hover:text-white"
+                    : "text-gray-500 hover:text-gray-800 hover:bg-gray-50 rounded-none py-6 px-6"
                 }`}
               >
-                <Link href={item.url}>
-                  {item.icon && <item.icon className="mr-2 h-8 w-8" />}
-                  <span className="text-md">{item.title}</span>
+                <Link href={item.url} className="flex items-center">
+                  {item.icon && (
+                    <item.icon 
+                      className={`mr-4 h-5 w-5 ${!isActive && "text-gray-400"}`} 
+                      strokeWidth={1.5} 
+                    />
+                  )}
+                  <span className={`text-[15px] ${isActive ? "font-medium" : "font-normal"}`}>
+                    {item.title}
+                  </span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
