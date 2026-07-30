@@ -1,21 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { 
-  Ban, 
-  Banknote, 
-  Briefcase, 
-  ClipboardList, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  LogIn, 
-  FileText, 
-  MessageSquare, 
-  CreditCard 
+import {
+    Ban,
+    Briefcase,
+    ClipboardList,
+    Mail,
+    Phone,
+    MapPin,
+    LogIn,
+    FileText,
+    MessageSquare,
+    CreditCard,
+    Banknote
 } from "lucide-react";
 
 const UserDetailsManagementModule = () => {
     return (
-        <div className="bg-[#f4f6f8] min-h-screen font-sans p-4 sm:p-8 w-full rounded-2xl">
+        <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto p-4 md:p-6 bg-[#f4f6f9] min-h-screen">
             {/* Top Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
                 <h1 className="text-xl text-gray-600 font-serif">Client Details: Chidi Okafor</h1>
@@ -119,7 +119,7 @@ const UserDetailsManagementModule = () => {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-bold text-gray-500 tracking-widest uppercase mb-1">PRIMARY ADDRESS</p>
-                                    <p className="text-sm font-semibold text-[#114232]">45 Lekki Phase 1, Lagos,<br/>Nigeria</p>
+                                    <p className="text-sm font-semibold text-[#114232]">45 Lekki Phase 1, Lagos,<br />Nigeria</p>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +131,7 @@ const UserDetailsManagementModule = () => {
                 <div className="w-full xl:w-[350px] shrink-0 bg-white rounded-3xl p-6 lg:p-8 shadow-sm self-start">
                     <h3 className="text-xl lg:text-2xl font-semibold text-[#114232] mb-10">Activity Timeline</h3>
                     <div className="relative pl-10 space-y-10">
-                        
+
                         {/* Timeline Item 1 */}
                         <div className="relative">
                             <div className="absolute left-[-24px] top-[32px] bottom-[-40px] w-[1px] bg-gray-200"></div>

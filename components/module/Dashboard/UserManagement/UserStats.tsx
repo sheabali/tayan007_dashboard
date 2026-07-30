@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, Wand2, UserPlus, FileSearch } from "lucide-react";
+import { Users, UserPlus, Brush, FileCheck } from "lucide-react";
 
 export interface UserStatItem {
   title: string;
@@ -19,7 +19,7 @@ const themeMap = {
     color: "text-[#3B82F6]",
   },
   creators: {
-    icon: Wand2,
+    icon: Brush,
     bg: "bg-[#FDF2F8]", // Soft pink
     color: "text-[#EC4899]",
   },
@@ -29,7 +29,7 @@ const themeMap = {
     color: "text-[#10B981]",
   },
   applications: {
-    icon: FileSearch,
+    icon: FileCheck,
     bg: "bg-[#FEF2F2]", // Soft red
     color: "text-[#EF4444]",
   },

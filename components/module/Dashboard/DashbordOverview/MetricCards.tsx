@@ -1,6 +1,6 @@
 "use client";
 
-import { FileClock, PenTool, Ticket, Users } from "lucide-react";
+import { Users, CreditCard, Brush, FileCheck } from "lucide-react";
 
 export interface MetricItem {
   title: string;
@@ -14,7 +14,7 @@ interface MetricCardsProps {
 
 const themeMap = {
   revenue: {
-    icon: Ticket,
+    icon: CreditCard,
     bg: "bg-green-50",
     color: "text-green-500",
   },
@@ -24,12 +24,12 @@ const themeMap = {
     color: "text-blue-500",
   },
   creators: {
-    icon: PenTool,
+    icon: Brush,
     bg: "bg-fuchsia-50",
     color: "text-fuchsia-500",
   },
   applications: {
-    icon: FileClock,
+    icon: FileCheck,
     bg: "bg-red-50",
     color: "text-red-500",
   },
