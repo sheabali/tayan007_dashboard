@@ -145,7 +145,7 @@ export default function PaymentPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto p-4 md:p-6 bg-[#f4f6f9] min-h-screen">
+    <div className="flex flex-col gap-6 w-full max-w-full mx-auto p-4 md:p-6 bg-[#f4f6f9] min-h-screen">
       <PaymentHeader />
 
       <PaymentMetrics

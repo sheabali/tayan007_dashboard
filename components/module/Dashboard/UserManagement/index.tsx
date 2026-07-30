@@ -6,7 +6,7 @@ import { mockStats, mockUsers } from "./mockData";
 
 const UserManagementModule = () => {
   return (
-    <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto p-4 md:p-6 bg-[#f4f6f9] min-h-screen">
+    <div className="flex flex-col gap-6 w-full max-w-full mx-auto p-4 md:p-6 bg-[#f4f6f9] min-h-screen">
       {/* Top Header Section */}
       <div className="flex justify-between items-center w-full mb-2">
         <h1 className="text-3xl font-serif text-[#1e293b] tracking-wide">

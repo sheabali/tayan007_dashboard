@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 const DisputeDetailsModule = () => {
   return (
-    <div className="flex flex-col gap-8 w-full">
+    <div className="flex flex-col gap-6 w-full max-w-full mx-auto p-4 md:p-6 bg-[#f4f6f9] min-h-screen">
       {/* Top Header Section */}
       <div className="flex justify-between items-center w-full mb-2">
         <h1 className="text-3xl font-serif text-[#1e293b] tracking-wide">
@@ -107,7 +107,7 @@ const DisputeDetailsModule = () => {
                   <span className="text-[15px] text-slate-800">Oct 24, 2023</span>
                 </div>
               </div>
-              
+
               <div className="flex flex-col gap-2">
                 <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Description</span>
                 <div className="bg-slate-50 p-4 rounded-[8px] text-[15px] text-slate-700 leading-relaxed">
@@ -136,7 +136,7 @@ const DisputeDetailsModule = () => {
             <div className="p-6 flex flex-col gap-6">
               <div className="flex flex-col gap-2">
                 <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Request Explanation Note</span>
-                <textarea 
+                <textarea
                   className="w-full bg-slate-50 border border-slate-200 rounded-[8px] p-3 text-sm text-slate-700 outline-none resize-none h-32 focus:border-teal-500 transition-colors placeholder:text-slate-400"
                   placeholder="Type a note for give warning to caregiver"
                 ></textarea>
@@ -150,7 +150,7 @@ const DisputeDetailsModule = () => {
                   <Ban className="w-4 h-4" />
                   Suspend user
                 </Button>
-                
+
                 <Button variant="ghost" className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 font-medium">
                   Ban user
                 </Button>
