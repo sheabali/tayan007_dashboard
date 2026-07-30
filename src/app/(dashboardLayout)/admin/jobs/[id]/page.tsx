@@ -5,8 +5,9 @@ export const metadata = {
   description: "View and manage detailed information for a specific job.",
 };
 
-const JobDetailsPage = ({ params }: { params: { id: string } }) => {
-    return <JobDetails id={params.id} />;
+const JobDetailsPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
+    return <JobDetails id={id} />;
 };
 
 export default JobDetailsPage;

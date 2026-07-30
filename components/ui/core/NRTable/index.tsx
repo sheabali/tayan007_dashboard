@@ -16,7 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CloudCog } from "lucide-react";
 
 interface NRTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
