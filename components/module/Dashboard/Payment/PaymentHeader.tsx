@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function PaymentHeader() {
   const token = useAppSelector((state) => state.auth.token);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: userData } = useGetMeQuery(undefined, { skip: !token }) as any;
 
   const userName = userData?.firstName

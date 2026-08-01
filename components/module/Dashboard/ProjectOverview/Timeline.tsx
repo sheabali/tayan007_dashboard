@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, CircleDot, Circle } from "lucide-react";
+import { Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -84,9 +84,8 @@ export default function Timeline({ milestones, onUpdateStatus }: TimelineProps) 
         {/* Continuous timeline line running in background */}
         <div className="absolute left-[31px] top-4 bottom-4 w-[2px] bg-slate-100" />
 
-        {milestones.map((milestone, idx) => {
+        {milestones.map((milestone) => {
           const isCompleted = milestone.status === "COMPLETED";
-          const isInProgress = milestone.status === "IN PROGRESS";
 
           return (
             <div key={milestone.id} className="relative flex gap-6 items-start group">

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
     Ban,
@@ -12,12 +14,25 @@ import {
     CreditCard,
     Banknote
 } from "lucide-react";
+import { Suspense } from "react";
+import ProfessionalDetails from "./ProfessionalDetails";
+import { useSearchParams } from "next/navigation";
 
-const UserDetailsManagementModule = () => {
+const UserDetailsManagementContent = () => {
+    const searchParams = useSearchParams();
+    const roleParam = searchParams.get('role');
+    
+    const role = (roleParam === 'professional' || roleParam === 'client') ? roleParam : 'client';
+
+    if (role === 'professional') {
+        return <ProfessionalDetails />;
+    }
+
     return (
-        <div className="flex flex-col gap-6 w-full max-w-full mx-auto p-4 md:p-6 bg-[#f4f6f9] min-h-screen">
+        <div className="flex flex-col gap-6 w-full max-w-full mx-auto p-4 md:p-6 bg-[#f4f6f9] min-h-screen relative">
+            
             {/* Top Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10 pt-10">
                 <h1 className="text-xl text-gray-600 font-serif">Client Details: Chidi Okafor</h1>
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600"></div>
@@ -187,6 +202,14 @@ const UserDetailsManagementModule = () => {
                 </div>
             </div>
         </div>
+    );
+};
+
+const UserDetailsManagementModule = () => {
+    return (
+        <Suspense fallback={<div className="p-6 text-center text-gray-500">Loading user details...</div>}>
+            <UserDetailsManagementContent />
+        </Suspense>
     );
 };
 

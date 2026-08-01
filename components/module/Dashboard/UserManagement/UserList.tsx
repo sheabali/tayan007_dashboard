@@ -145,7 +145,7 @@ const UserList = ({ users }: UserListProps) => {
         const user = row.original;
         return (
           <div className="flex items-center gap-2">
-            <Link href={`/user/dashboard/users/${user.id}`}>
+            <Link href={`/user/dashboard/users/${user.id}?role=${user.role === 'Creator' ? 'professional' : 'client'}`}>
               <Button variant="ghost" className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer active:scale-90 h-8 w-8">
                 <Eye className="w-4 h-4" />
               </Button>

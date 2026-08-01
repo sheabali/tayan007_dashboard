@@ -21,11 +21,9 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  UserPlus,
 } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { useState } from "react";
 
 interface Creator {
   name: string;
@@ -89,6 +87,7 @@ export default function ProjectList({
   onAssignCreator,
 }: ProjectListProps) {
   const token = useAppSelector((state) => state.auth.token);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: userData } = useGetMeQuery({ skip: !token }) as any;
 
   // Map stage to badge styles

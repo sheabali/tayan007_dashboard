@@ -3,8 +3,7 @@
 import { useGetMeQuery } from "@/redux/api/authApi";
 import { useAppSelector } from "@/redux/hooks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import placeholder from "@/src/assets/placeholders/image_placeholder.png";
-import Image from "next/image";
+
 import { ArrowLeft } from "lucide-react";
 
 interface ProjectHeaderProps {
@@ -15,6 +14,7 @@ interface ProjectHeaderProps {
 
 export default function ProjectHeader({ status, title, onBack }: ProjectHeaderProps) {
   const token = useAppSelector((state) => state.auth.token);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: userData } = useGetMeQuery({ skip: !token }) as any;
 
   // Map status to badge style
@@ -53,8 +53,6 @@ export default function ProjectHeader({ status, title, onBack }: ProjectHeaderPr
   const userName = userData?.firstName
     ? `${userData.firstName} ${userData.lastName || ""}`.trim()
     : "Admin User";
-
-  const userRole = userData?.role || "Admin";
 
   return (
     <div className="flex flex-col gap-4 w-full">

@@ -26,6 +26,7 @@ const AddCountryModal: React.FC<AddCountryModalProps> = ({
   const [currencyName, setCurrencyName] = useState("");
   const [currencySymbol, setCurrencySymbol] = useState("");
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (initialData) {
       setCountry(initialData.country);

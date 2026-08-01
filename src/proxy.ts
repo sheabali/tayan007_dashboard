@@ -6,23 +6,23 @@ interface IUser {
   role: "ADMIN" | "USER" | string;
 }
 
-const roleBasedRoutes: Record<string, string[]> = {
-  "/admin": ["ADMIN"],
-  "/user": ["USER", "ADMIN"],
-};
+// const roleBasedRoutes: Record<string, string[]> = {
+//   "/admin": ["ADMIN"],
+//   "/user": ["USER", "ADMIN"],
+// };
 
-const publicRoutes = [
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password",
-];
+// const publicRoutes = [
+//   "/login",
+//   "/register",
+//   "/forgot-password",
+//   "/reset-password",
+// ];
 
 export async function proxy(request: NextRequest) {
-  const accessToken = request.cookies.get("token")?.value;
-  const { pathname } = request.nextUrl;
+  // const accessToken = request.cookies.get("token")?.value;
+  // const { pathname } = request.nextUrl;
 
-  const user: IUser | null = null;
+  // const user: IUser | null = null;
 
   // if (!accessToken) {
   //   if (publicRoutes.includes(pathname)) {

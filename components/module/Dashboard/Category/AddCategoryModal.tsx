@@ -24,14 +24,16 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   initialData,
 }) => {
   const [categoryName, setCategoryName] = useState("");
+  const [prevInitialData, setPrevInitialData] = useState<CategoryItem | null | undefined>(initialData);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
 
-  useEffect(() => {
-    if (initialData) {
-      setCategoryName(initialData.categoryName);
-    } else {
-      setCategoryName("");
-    }
-  }, [initialData, isOpen]);
+  // Instead of useEffect, adjust state while rendering when props change
+  // This avoids a cascading double-render. (https://react.dev/learn/you-might-not-need-an-effect)
+  if (initialData !== prevInitialData || isOpen !== prevIsOpen) {
+    setPrevInitialData(initialData);
+    setPrevIsOpen(isOpen);
+    setCategoryName(initialData ? initialData.categoryName : "");
+  }
 
   const isEditing = !!initialData;
 

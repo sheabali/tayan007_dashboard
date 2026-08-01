@@ -90,7 +90,7 @@ export default function Cancellation({
               Initiate Cancellation
             </DialogTitle>
             <DialogDescription className="text-sm text-slate-500 leading-relaxed mt-1">
-              Are you sure you want to cancel the "Coffee House Campaign" project? This action will notify all participants and apply any relevant cancellation fees.
+              Are you sure you want to cancel the &quot;Coffee House Campaign&quot; project? This action will notify all participants and apply any relevant cancellation fees.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex gap-3 justify-end mt-4">
