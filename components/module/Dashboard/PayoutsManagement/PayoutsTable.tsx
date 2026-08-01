@@ -198,7 +198,7 @@ export default function PayoutsTable({
               <Button
                 size="sm"
                 onClick={(e) => handleProcessClick(e, payout)}
-                className="h-8 bg-[#0A442F] hover:bg-blue-700 text-white font-bold rounded-lg text-xs py-1 px-4 cursor-pointer"
+                className="h-8 bg-[#0A442F] hover:bg-green-800 text-white font-bold rounded-lg text-xs py-1 px-4 cursor-pointer"
               >
                 Process
               </Button>
