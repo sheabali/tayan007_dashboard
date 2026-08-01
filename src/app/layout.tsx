@@ -12,8 +12,8 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "Valley Creators",
-  description: "Valley Creators",
+  title: "Areda Globals",
+  description: "Areda Globals",
 };
 
 export default function RootLayout({
