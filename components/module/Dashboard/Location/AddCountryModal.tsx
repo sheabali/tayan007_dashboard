@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { LocationItem } from "./mockData";
 import { toast } from "sonner";
 
@@ -22,23 +22,31 @@ const AddCountryModal: React.FC<AddCountryModalProps> = ({
   onOpenChange,
   initialData,
 }) => {
-  const [country, setCountry] = useState("");
-  const [currencyName, setCurrencyName] = useState("");
-  const [currencySymbol, setCurrencySymbol] = useState("");
+  const [country, setCountry] = useState(initialData?.country || "");
+  const [currencyName, setCurrencyName] = useState(
+    initialData ? (initialData.currency === "NGN" ? "Nigerian Naira" : "West African CFA franc") : ""
+  );
+  const [currencySymbol, setCurrencySymbol] = useState(initialData?.currency || "");
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => {
-    if (initialData) {
-      setCountry(initialData.country);
-      setCurrencySymbol(initialData.currency);
-      // Mock data doesn't have full currency name, just fallback for now
-      setCurrencyName(initialData.currency === "NGN" ? "Nigerian Naira" : "West African CFA franc");
-    } else {
-      setCountry("");
-      setCurrencyName("");
-      setCurrencySymbol("");
+  const [prevInitialData, setPrevInitialData] = useState(initialData);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+  if (initialData !== prevInitialData || isOpen !== prevIsOpen) {
+    setPrevInitialData(initialData);
+    setPrevIsOpen(isOpen);
+    
+    if (isOpen) {
+      if (initialData) {
+        setCountry(initialData.country);
+        setCurrencySymbol(initialData.currency);
+        setCurrencyName(initialData.currency === "NGN" ? "Nigerian Naira" : "West African CFA franc");
+      } else {
+        setCountry("");
+        setCurrencyName("");
+        setCurrencySymbol("");
+      }
     }
-  }, [initialData, isOpen]);
+  }
 
   const isEditing = !!initialData;
 
