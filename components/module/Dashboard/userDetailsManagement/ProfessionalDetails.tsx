@@ -26,7 +26,7 @@ const ProfessionalDetails = () => {
             <div className="flex flex-col xl:flex-row gap-6">
                 {/* Left Column (Approx 70%) */}
                 <div className="flex-[2] flex flex-col gap-6 w-full">
-                    
+
                     {/* Profile Card */}
                     <div className="bg-white rounded-3xl p-6 shadow-sm flex flex-col md:flex-row gap-6 items-start md:items-center relative">
                         <div className="absolute top-6 right-6 text-sm text-gray-500">
@@ -117,7 +117,7 @@ const ProfessionalDetails = () => {
 
                         {/* Guarantor Information */}
                         <div className="bg-white rounded-3xl p-6 shadow-sm flex flex-col gap-4">
-                            <h3 className="text-2xl font-semibold text-[#043322]">Guarantor<br/>Information</h3>
+                            <h3 className="text-2xl font-semibold text-[#043322]">Guarantor<br />Information</h3>
                             <div className="mt-2">
                                 <div className="flex items-center gap-2">
                                     <p className="font-bold text-[#043322] text-lg">Engr. Samuel Okoro</p>
@@ -180,7 +180,7 @@ const ProfessionalDetails = () => {
 
                 {/* Right Column (Approx 30%) */}
                 <div className="flex-1 flex flex-col gap-6 w-full">
-                    
+
                     {/* Verification Docs */}
                     <div className="bg-white rounded-3xl p-6 shadow-sm">
                         <div className="flex items-center gap-2 text-[#043322] font-semibold text-xl mb-6">
@@ -199,7 +199,7 @@ const ProfessionalDetails = () => {
                             {/* Doc 2 */}
                             <div className="border border-gray-200 rounded-xl p-4 flex justify-between items-center bg-gray-50/50 hover:bg-gray-50 transition-colors cursor-pointer">
                                 <div>
-                                    <p className="text-sm font-semibold text-[#043322]">Professional<br/>License</p>
+                                    <p className="text-sm font-semibold text-[#043322]">Professional<br />License</p>
                                     <p className="text-xs text-gray-500 mt-1">COREN_Cert_2023.pdf</p>
                                 </div>
                                 <Eye className="w-5 h-5 text-[#043322]" />
@@ -207,7 +207,7 @@ const ProfessionalDetails = () => {
                             {/* Doc 3 */}
                             <div className="border border-gray-200 rounded-xl p-4 flex justify-between items-center bg-gray-50/50 hover:bg-gray-50 transition-colors cursor-pointer">
                                 <div>
-                                    <p className="text-sm font-semibold text-[#043322]">Business<br/>Registration</p>
+                                    <p className="text-sm font-semibold text-[#043322]">Business<br />Registration</p>
                                     <p className="text-xs text-gray-500 mt-1">CAC_Registration.pdf</p>
                                 </div>
                                 <Eye className="w-5 h-5 text-[#043322]" />

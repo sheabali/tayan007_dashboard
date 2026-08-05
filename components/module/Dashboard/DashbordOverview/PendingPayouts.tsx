@@ -73,7 +73,7 @@ const columns: ColumnDef<PayoutData>[] = [
       return (
         <div className="flex justify-start">
           <Button className="px-5 py-1.5 bg-[#153427] hover:bg-[#0f251c] text-white text-xs font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow cursor-pointer">
-            Review
+            Process
           </Button>
         </div>
       );

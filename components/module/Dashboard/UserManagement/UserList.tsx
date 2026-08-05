@@ -11,32 +11,58 @@ import { Button } from "@/components/ui/button";
 export interface UserItem {
   id: string;
   name: string;
-  userId: string;
+  userId?: string;
   email: string;
   phone: string;
-  status: "active" | "suspended";
-  role: "Client" | "Creator";
+  status: string;
+  role: string;
   joinDate: string;
 }
 
 interface UserListProps {
   users: UserItem[];
+  meta?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPage: number;
+  };
+  filters: {
+    role: string;
+    status: string;
+    sort: string;
+    page: number;
+    limit: number;
+  };
+  onFilterChange: (newFilters: UserListProps['filters']) => void;
+  isLoading?: boolean;
 }
 
-const UserList = ({ users }: UserListProps) => {
-  const [activeTab, setActiveTab] = useState<"Client" | "Creator">("Client");
-  const [statusFilter, setStatusFilter] = useState<string>("All Users");
-  const [sortOrder, setSortOrder] = useState<string>("Newest First");
+const UserList = ({ users, meta, filters, onFilterChange, isLoading }: UserListProps) => {
+  const { role: activeTab, status: statusFilter, sort: sortOrder, page, limit } = filters;
 
-  // Filtering data based on tab selection
-  const filteredUsers = users.filter((user) => {
-    const matchesTab = user.role === activeTab;
-    const matchesStatus =
-      statusFilter === "All Users" ||
-      (statusFilter === "Active" && user.status === "active") ||
-      (statusFilter === "Suspended" && user.status === "suspended");
-    return matchesTab && matchesStatus;
-  });
+  const handleTabChange = (tab: string) => {
+    onFilterChange({ ...filters, role: tab, page: 1 });
+  };
+
+  const handleStatusChange = (status: string) => {
+    onFilterChange({ ...filters, status, page: 1 });
+  };
+
+  const handleSortChange = (sort: string) => {
+    onFilterChange({ ...filters, sort, page: 1 });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && (!meta || newPage <= meta.totalPage)) {
+      onFilterChange({ ...filters, page: newPage });
+    }
+  };
+
+  // Handle "Name A-Z" sorting on the frontend, others rely on backend
+  const filteredUsers = sortOrder === "Name A-Z" 
+    ? [...users].sort((a, b) => a.name.localeCompare(b.name))
+    : users;
 
   const columns: ColumnDef<UserItem>[] = [
     {
@@ -51,7 +77,7 @@ const UserList = ({ users }: UserListProps) => {
           .toUpperCase()
           .slice(0, 1); // Only 1 letter in the image avatar
         const bgClass =
-          user.role === "Creator"
+          user.role === "Creator" || user.role === "Professional"
             ? "bg-[#6366F1] text-white"
             : "bg-[#4F46E5] text-white";
         return (
@@ -66,7 +92,7 @@ const UserList = ({ users }: UserListProps) => {
                 {user.name}
               </span>
               <span className="text-xs text-slate-400 mt-0.5">
-                {user.userId}
+                {user.userId || `#${user.id.slice(-6)}`}
               </span>
             </div>
           </div>
@@ -113,9 +139,9 @@ const UserList = ({ users }: UserListProps) => {
       header: "Role",
       cell: ({ row }) => {
         const role = row.original.role;
-        const displayRole = role === "Creator" ? "Professional" : "Client";
+        const displayRole = role === "Creator" || role === "Professional" ? "Professional" : "Client";
         const bg =
-          role === "Creator"
+          role === "Creator" || role === "Professional"
             ? "bg-indigo-100 text-indigo-700"
             : "bg-blue-100 text-blue-700";
         return (
@@ -145,7 +171,7 @@ const UserList = ({ users }: UserListProps) => {
         const user = row.original;
         return (
           <div className="flex items-center gap-2">
-            <Link href={`/user/dashboard/users/${user.id}?role=${user.role === 'Creator' ? 'professional' : 'client'}`}>
+            <Link href={`/user/dashboard/users/${user.id}?role=${(user.role === 'Creator' || user.role === 'Professional') ? 'professional' : 'client'}`}>
               <Button variant="ghost" className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer active:scale-90 h-8 w-8">
                 <Eye className="w-4 h-4" />
               </Button>
@@ -167,20 +193,20 @@ const UserList = ({ users }: UserListProps) => {
         <div className="flex bg-white p-1.5 rounded-[16px] w-fit shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100">
           <Button
             variant="ghost"
-            onClick={() => setActiveTab("Client")}
+            onClick={() => handleTabChange("Client")}
             className={`px-8 py-2 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer h-10 ${activeTab === "Client"
-                ? "bg-[#C0962B] text-white hover:bg-[#b08825]"
-                : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+              ? "bg-[#C0962B] text-white hover:bg-[#b08825]"
+              : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
               }`}
           >
             Clients
           </Button>
           <Button
             variant="ghost"
-            onClick={() => setActiveTab("Creator")}
-            className={`px-8 py-2 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer h-10 ${activeTab === "Creator"
-                ? "bg-[#C0962B] text-white hover:bg-[#b08825]"
-                : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+            onClick={() => handleTabChange("Professional")}
+            className={`px-8 py-2 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer h-10 ${activeTab === "Professional" || activeTab === "Creator"
+              ? "bg-[#C0962B] text-white hover:bg-[#b08825]"
+              : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
               }`}
           >
             Professional
@@ -194,7 +220,7 @@ const UserList = ({ users }: UserListProps) => {
               label=""
               placeholder={`Status: ${statusFilter}`}
               options={["All Users", "Active", "Suspended"]}
-              onChange={(val) => setStatusFilter(val)}
+              onChange={(val) => handleStatusChange(val)}
             />
           </div>
           <div className="pl-2">
@@ -202,7 +228,7 @@ const UserList = ({ users }: UserListProps) => {
               label=""
               placeholder={`Sort: ${sortOrder}`}
               options={["Newest First", "Oldest First", "Name A-Z"]}
-              onChange={(val) => setSortOrder(val)}
+              onChange={(val) => handleSortChange(val)}
             />
           </div>
         </div>
@@ -213,29 +239,50 @@ const UserList = ({ users }: UserListProps) => {
         <NRTable columns={columns} data={filteredUsers} />
 
         {/* Pagination element */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-slate-100">
-          <span className="text-sm font-medium text-slate-500">
-            Showing 1-{filteredUsers.length} of {filteredUsers.length * 312} users
-          </span>
+        {meta && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-slate-100">
+            <span className="text-sm font-medium text-slate-500">
+              Showing {(page - 1) * limit + 1}-{Math.min(page * limit, meta.total)} of {meta.total} users
+            </span>
 
-          <div className="flex items-center gap-1.5">
-            <Button variant="ghost" className="h-9 w-9 p-0 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <Button variant="ghost" className="w-9 h-9 p-0 flex items-center justify-center text-sm font-semibold bg-[#C0962B] text-white rounded-lg shadow-sm hover:bg-[#b08825]">
-              1
-            </Button>
-            <Button variant="ghost" className="w-9 h-9 p-0 flex items-center justify-center text-sm font-semibold text-slate-600 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
-              2
-            </Button>
-            <Button variant="ghost" className="w-9 h-9 p-0 flex items-center justify-center text-sm font-semibold text-slate-600 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
-              3
-            </Button>
-            <Button variant="ghost" className="h-9 w-9 p-0 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer">
-              <ChevronRight className="w-4 h-4" />
-            </Button>
+            <div className="flex items-center gap-1.5">
+              <Button
+                variant="ghost"
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page <= 1}
+                className="h-9 w-9 p-0 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+
+              {Array.from({ length: meta.totalPage }, (_, i) => i + 1)
+                .filter(p => p === 1 || p === meta.totalPage || Math.abs(p - page) <= 1)
+                .map((p, idx, arr) => {
+                  return (
+                    <div key={p} className="flex items-center gap-1.5">
+                      {idx > 0 && arr[idx - 1] !== p - 1 && <span className="text-slate-400 px-1">...</span>}
+                      <Button
+                        variant="ghost"
+                        onClick={() => handlePageChange(p)}
+                        className={`w-9 h-9 p-0 flex items-center justify-center text-sm font-semibold rounded-lg transition-colors cursor-pointer ${p === page
+                          ? "bg-[#C0962B] text-white shadow-sm hover:bg-[#b08825]"
+                          : "text-slate-600 hover:bg-slate-50"
+                          }`}>
+                        {p}
+                      </Button>
+                    </div>
+                  );
+                })}
+
+              <Button
+                variant="ghost"
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page >= meta.totalPage}
+                className="h-9 w-9 p-0 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
