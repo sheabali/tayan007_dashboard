@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 interface RefundItem {
-  id: number;
+  id: string | number;
   name: string;
   avatar: string;
   scheduledDate: string;

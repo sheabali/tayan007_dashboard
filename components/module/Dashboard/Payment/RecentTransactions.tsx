@@ -10,7 +10,7 @@ interface Transaction {
   creator: string;
   amount: number;
   fee: number;
-  status: "COMPLETED" | "PENDING";
+  status: "COMPLETED" | "PENDING" | "CANCELLED" | string;
 }
 
 interface RecentTransactionsProps {
@@ -33,6 +33,8 @@ export default function RecentTransactions({
     switch (status) {
       case "COMPLETED":
         return "bg-[#e5fcf0] text-[#1eb462] rounded-md font-bold text-[10px] tracking-wider py-1 px-2.5 uppercase";
+      case "CANCELLED":
+        return "bg-[#fcecec] text-[#e02424] rounded-md font-bold text-[10px] tracking-wider py-1 px-2.5 uppercase";
       case "PENDING":
       default:
         return "bg-[#fef6e0] text-[#db9204] rounded-md font-bold text-[10px] tracking-wider py-1 px-2.5 uppercase";

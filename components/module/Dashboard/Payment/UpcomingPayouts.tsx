@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 
 interface PayoutItem {
-  id: number;
+  id: string | number;
   name: string;
   avatar: string;
   role: string;
@@ -27,7 +27,7 @@ interface PayoutItem {
 
 interface UpcomingPayoutsProps {
   payouts: PayoutItem[];
-  onReleasePayout: (id: number) => void;
+  onReleasePayout: (id: string | number) => void;
 }
 
 export default function UpcomingPayouts({

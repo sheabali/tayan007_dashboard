@@ -3,9 +3,11 @@
 import { useState } from "react";
 import PayoutsHeader from "./PayoutsHeader";
 import PayoutsTable from "./PayoutsTable";
+import { useGetPayoutsQuery } from "@/redux/api/dashboardApi";
+import { format } from "date-fns";
 
 interface Payout {
-  id: number;
+  id: string | number;
   name: string;
   avatar: string;
   role: string;
@@ -13,124 +15,79 @@ interface Payout {
   fees: number;
   netPayout: number;
   lastPayout: string;
-  status: "APPROVED" | "PENDING REVIEW" | "PROCESSING" | "COMPLETED";
+  status: "APPROVED" | "PENDING REVIEW" | "PROCESSING" | "COMPLETED" | "PENDING" | string;
 }
 
-const initialPayouts: Payout[] = [
-  {
-    id: 1,
-    name: "Elena Rodriguez",
-    avatar: "/images/elena_profile.png",
-    role: "Videographer",
-    totalEarned: 4250.00,
-    fees: 637.50,
-    netPayout: 3612.50,
-    lastPayout: "Oct 12, 2026",
-    status: "APPROVED",
-  },
-  {
-    id: 2,
-    name: "Marcus Chen",
-    avatar: "/images/marcus_profile.png",
-    role: "Photographer",
-    totalEarned: 2800.00,
-    fees: 420.00,
-    netPayout: 2380.00,
-    lastPayout: "Sep 30, 2026",
-    status: "PENDING REVIEW",
-  },
-  {
-    id: 3,
-    name: "Sarah Jenkins",
-    avatar: "/images/sofia_profile.png",
-    role: "Producer",
-    totalEarned: 1200.00,
-    fees: 180.00,
-    netPayout: 1020.00,
-    lastPayout: "Oct 05, 2026",
-    status: "APPROVED",
-  },
-  {
-    id: 4,
-    name: "Sarah Jenkins",
-    avatar: "/images/sofia_profile.png",
-    role: "Producer",
-    totalEarned: 1200.00,
-    fees: 180.00,
-    netPayout: 1020.00,
-    lastPayout: "Oct 05, 2026",
-    status: "APPROVED",
-  },
-  {
-    id: 5,
-    name: "Sarah Jenkins",
-    avatar: "/images/sofia_profile.png",
-    role: "Producer",
-    totalEarned: 1200.00,
-    fees: 180.00,
-    netPayout: 1020.00,
-    lastPayout: "Oct 05, 2026",
-    status: "APPROVED",
-  },
-  {
-    id: 6,
-    name: "Sarah Jenkins",
-    avatar: "/images/sofia_profile.png",
-    role: "Producer",
-    totalEarned: 1200.00,
-    fees: 180.00,
-    netPayout: 1020.00,
-    lastPayout: "Oct 05, 2026",
-    status: "APPROVED",
-  },
-  {
-    id: 7,
-    name: "Sarah Jenkins",
-    avatar: "/images/sofia_profile.png",
-    role: "Producer",
-    totalEarned: 1200.00,
-    fees: 180.00,
-    netPayout: 1020.00,
-    lastPayout: "Oct 05, 2026",
-    status: "APPROVED",
-  },
-  {
-    id: 8,
-    name: "David Miller",
-    avatar: "/images/david_profile.png",
-    role: "Director",
-    totalEarned: 6900.00,
-    fees: 1035.00,
-    netPayout: 5865.00,
-    lastPayout: "Oct 15, 2026",
-    status: "PENDING REVIEW",
-  },
-];
+interface APIPayoutItem {
+  id: string;
+  workerId: string;
+  amount: number;
+  fee: number;
+  netPayout: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  worker?: {
+    fullName: string;
+    profileImage: string;
+  };
+}
 
 export default function PayoutsManagement() {
-  const [payouts, setPayouts] = useState<Payout[]>(initialPayouts);
+  const { data, isLoading } = useGetPayoutsQuery({});
+  const payoutsData = data?.data || [];
+
+  const [processedIds, setProcessedIds] = useState<Set<string | number>>(new Set());
+  const [approvedIds, setApprovedIds] = useState<Set<string | number>>(new Set());
+
+  // Derive state
+  const payouts: Payout[] = payoutsData.map((p: APIPayoutItem) => {
+    let currentStatus = p.status;
+    
+    if (processedIds.has(p.id)) {
+      currentStatus = "COMPLETED";
+    } else if (approvedIds.has(p.id)) {
+      currentStatus = "APPROVED";
+    }
+
+    return {
+      id: p.id,
+      name: p.worker?.fullName || "Unknown",
+      avatar: p.worker?.profileImage || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+      role: "Professional",
+      totalEarned: p.amount,
+      fees: p.fee,
+      netPayout: p.netPayout,
+      lastPayout: format(new Date(p.createdAt), "MMM dd, yyyy"),
+      status: currentStatus,
+    };
+  });
 
   // Process APPROVED payouts early, marking status to COMPLETED
-  const handleProcessPayout = (id: number) => {
-    const todayStr = new Date().toLocaleDateString("en-US", {
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
+  const handleProcessPayout = (id: string | number) => {
+    setProcessedIds(prev => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
     });
-
-    setPayouts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, status: "COMPLETED", lastPayout: todayStr } : p
-      )
-    );
   };
 
   // Clear PENDING REVIEW requests, approving the payout
-  const handleApproveRequest = (id: number) => {
-    setPayouts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status: "APPROVED" } : p))
-    );
+  const handleApproveRequest = (id: string | number) => {
+    setApprovedIds(prev => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full bg-slate-50/50 rounded-3xl border border-slate-100/50 shadow-xs mb-20">
+        <p className="text-slate-500 font-medium">Loading payouts...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-full mx-auto p-4 md:p-6 bg-slate-50/50 min-h-screen rounded-3xl border border-slate-100/50 shadow-xs mb-20">
@@ -141,6 +98,7 @@ export default function PayoutsManagement() {
       <div className="w-full">
         <PayoutsTable
           payouts={payouts}
+          totalPayouts={data?.meta?.total ?? payouts.length}
           onProcessPayout={handleProcessPayout}
           onApproveRequest={handleApproveRequest}
         />

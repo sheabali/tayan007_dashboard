@@ -16,9 +16,10 @@ import {
 import { ChevronLeft, ChevronRight, User, CheckCircle2, ShieldQuestion } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
+import { useProcessPayoutMutation } from "@/redux/api/dashboardApi";
 
 interface Payout {
-  id: number;
+  id: string | number;
   name: string;
   avatar: string;
   role: string;
@@ -26,22 +27,25 @@ interface Payout {
   fees: number;
   netPayout: number;
   lastPayout: string;
-  status: "APPROVED" | "PENDING REVIEW" | "PROCESSING" | "COMPLETED";
+  status: "APPROVED" | "PENDING REVIEW" | "PROCESSING" | "COMPLETED" | "PENDING" | string;
 }
 
 interface PayoutsTableProps {
   payouts: Payout[];
-  onProcessPayout: (id: number) => void;
-  onApproveRequest: (id: number) => void;
+  totalPayouts?: number;
+  onProcessPayout: (id: string | number) => void;
+  onApproveRequest: (id: string | number) => void;
 }
 
 export default function PayoutsTable({
   payouts,
+  totalPayouts,
   onProcessPayout,
   onApproveRequest,
 }: PayoutsTableProps) {
   const [selectedPayout, setSelectedPayout] = useState<Payout | null>(null);
   const [activeModal, setActiveModal] = useState<"PROCESS" | "REVIEW" | null>(null);
+  const [processPayout, { isLoading: isProcessing }] = useProcessPayoutMutation();
 
   const formatCurrency = (val: number, isNegative = false) => {
     const formatted = new Intl.NumberFormat("en-US", {
@@ -60,6 +64,7 @@ export default function PayoutsTable({
       case "APPROVED":
         return "bg-emerald-50 text-emerald-600 border-emerald-200/50 hover:bg-emerald-50 rounded-md font-bold text-[10px] tracking-wider py-0.5 px-2";
       case "PENDING REVIEW":
+      case "PENDING":
         return "bg-amber-50 text-amber-600 border-amber-200/50 hover:bg-amber-50 rounded-md font-bold text-[10px] tracking-wider py-0.5 px-2";
       case "PROCESSING":
       default:
@@ -74,7 +79,7 @@ export default function PayoutsTable({
   };
 
   const handleRowClick = (payout: Payout) => {
-    if (payout.status === "PENDING REVIEW") {
+    if (payout.status === "PENDING REVIEW" || payout.status === "PENDING") {
       setSelectedPayout(payout);
       setActiveModal("REVIEW");
     } else {
@@ -90,12 +95,17 @@ export default function PayoutsTable({
     setSelectedPayout(null);
   };
 
-  const handleConfirmApprove = () => {
+  const handleConfirmApprove = async () => {
     if (!selectedPayout) return;
-    onApproveRequest(selectedPayout.id);
-    toast.success(`Payout request approved for ${selectedPayout.name}`);
-    setActiveModal(null);
-    setSelectedPayout(null);
+    try {
+      await processPayout(selectedPayout.id).unwrap();
+      onApproveRequest(selectedPayout.id);
+      toast.success(`Payout request approved for ${selectedPayout.name}`);
+      setActiveModal(null);
+      setSelectedPayout(null);
+    } catch (error) {
+      toast.error("Failed to approve payout request");
+    }
   };
 
   // Define Columns for NRTable
@@ -231,7 +241,7 @@ export default function PayoutsTable({
       {/* Pagination Bar */}
       <div className="border-t border-slate-100 p-6 flex items-center justify-between bg-white text-xs text-slate-400 font-semibold select-none">
         <span>
-          Showing 1-{payouts.length} of 1,248 users
+          Showing 1-{payouts.length} of {totalPayouts ?? payouts.length} users
         </span>
         <div className="flex items-center gap-1.5">
           <Button
@@ -392,9 +402,10 @@ export default function PayoutsTable({
               </Button>
               <Button
                 onClick={handleConfirmApprove}
+                disabled={isProcessing}
                 className="font-semibold bg-blue-600 hover:bg-blue-700 text-white"
               >
-                Approve Payout Request
+                {isProcessing ? "Approving..." : "Approve Payout Request"}
               </Button>
             </DialogFooter>
           </DialogContent>

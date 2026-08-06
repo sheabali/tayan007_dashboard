@@ -53,15 +53,56 @@ export const dashboardApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Jobs"],
     }),
+    getCategoryStats: builder.query({
+      query: () => ({
+        url: "/admin/category/stats",
+        method: "GET",
+      }),
+      providesTags: ["Dashboard", "Jobs"], // Since it counts jobs, maybe useful, or maybe "Category" if we add it
+    }),
+    getPaymentStats: builder.query({
+      query: () => ({
+        url: "/admin/dashboard/payment-stats",
+        method: "GET",
+      }),
+      providesTags: ["Dashboard"],
+    }),
+    getPayouts: builder.query({
+      query: () => ({
+        url: "/payments/payouts",
+        method: "GET",
+      }),
+      providesTags: ["Payouts"],
+    }),
+    processPayout: builder.mutation({
+      query: (id: string | number) => ({
+        url: `/payments/payouts/${id}/process`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Payouts"],
+    }),
+    getRefunds: builder.query({
+      query: (params) => ({
+        url: "/payments/refunds",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["Refunds"],
+    }),
   }),
 });
 
-export const { 
-  useGetDashboardDataQuery, 
-  useGetUserManagementDataQuery, 
-  useGetUserDetailsQuery, 
+export const {
+  useGetDashboardDataQuery,
+  useGetUserManagementDataQuery,
+  useGetUserDetailsQuery,
   useGetJobsDataQuery,
   useGetJobDetailsQuery,
   useSuspendJobMutation,
-  useDeleteJobMutation
+  useDeleteJobMutation,
+  useGetCategoryStatsQuery,
+  useGetPaymentStatsQuery,
+  useGetPayoutsQuery,
+  useProcessPayoutMutation,
+  useGetRefundsQuery,
 } = dashboardApi;

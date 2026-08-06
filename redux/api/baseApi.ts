@@ -2,6 +2,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout } from "../features/authSlice";
 import { RootState } from "../store";
+import Cookies from "js-cookie";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -17,7 +18,9 @@ const baseQueryWithAuth: ReturnType<typeof fetchBaseQuery> = async (
   const rawBaseQuery = fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.token;
+      const token =
+        (getState() as RootState).auth?.token ||
+        (typeof window !== "undefined" ? Cookies.get("accessToken") : undefined);
       if (token) {
         headers.set("Authorization", `${token}`);
       }
@@ -44,7 +47,7 @@ const baseQueryWithAuth: ReturnType<typeof fetchBaseQuery> = async (
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithAuth,
-  tagTypes: ["User", "Events", "Dashboard", "Jobs"],
+  tagTypes: ["User", "Events", "Dashboard", "Jobs", "Payouts", "Refunds"],
   endpoints: (builder) => ({}),
 });
 
