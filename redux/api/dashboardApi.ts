@@ -24,7 +24,44 @@ export const dashboardApi = baseApi.injectEndpoints({
       }),
       providesTags: (result, error, id) => [{ type: "User", id }],
     }),
+    getJobsData: builder.query({
+      query: (params) => ({
+        url: "/admin/jobs",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["Jobs"],
+    }),
+    getJobDetails: builder.query({
+      query: (id: string) => ({
+        url: `/admin/jobs/${id}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "Jobs", id }],
+    }),
+    suspendJob: builder.mutation({
+      query: (id: string) => ({
+        url: `/admin/jobs/${id}/suspend`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (result, error, id) => [{ type: "Jobs", id }, "Jobs"],
+    }),
+    deleteJob: builder.mutation({
+      query: (id: string) => ({
+        url: `/admin/jobs/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Jobs"],
+    }),
   }),
 });
 
-export const { useGetDashboardDataQuery, useGetUserManagementDataQuery, useGetUserDetailsQuery } = dashboardApi;
+export const { 
+  useGetDashboardDataQuery, 
+  useGetUserManagementDataQuery, 
+  useGetUserDetailsQuery, 
+  useGetJobsDataQuery,
+  useGetJobDetailsQuery,
+  useSuspendJobMutation,
+  useDeleteJobMutation
+} = dashboardApi;
