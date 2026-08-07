@@ -53,13 +53,6 @@ export const dashboardApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Jobs"],
     }),
-    getCategoryStats: builder.query({
-      query: () => ({
-        url: "/admin/category/stats",
-        method: "GET",
-      }),
-      providesTags: ["Dashboard", "Jobs"], // Since it counts jobs, maybe useful, or maybe "Category" if we add it
-    }),
     getPaymentStats: builder.query({
       query: () => ({
         url: "/admin/dashboard/payment-stats",
@@ -100,7 +93,6 @@ export const {
   useGetJobDetailsQuery,
   useSuspendJobMutation,
   useDeleteJobMutation,
-  useGetCategoryStatsQuery,
   useGetPaymentStatsQuery,
   useGetPayoutsQuery,
   useProcessPayoutMutation,

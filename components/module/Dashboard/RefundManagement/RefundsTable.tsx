@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ChevronLeft, ChevronRight, ShieldQuestion } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShieldQuestion, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 import type { RefundItem } from "./index";
@@ -104,10 +104,20 @@ export default function RefundsTable({
     setActiveModal("PROCESS");
   };
 
+  const handleReviewClick = (e: React.MouseEvent, refund: RefundItem) => {
+    e.stopPropagation();
+    setSelectedRefund(refund);
+    setActiveModal("REVIEW");
+  };
+
   const handleRowClick = (refund: RefundItem) => {
-    if (refund.status.toUpperCase() === "PENDING" || refund.status.toUpperCase() === "PENDING REVIEW") {
+    const status = refund.status.toUpperCase();
+    if (status === "PENDING" || status === "PENDING REVIEW") {
       setSelectedRefund(refund);
       setActiveModal("REVIEW");
+    } else if (status === "APPROVED") {
+      setSelectedRefund(refund);
+      setActiveModal("PROCESS");
     } else {
       toast.info(`Creator: ${getCreatorName(refund)} | Status: ${refund.status}`);
     }
@@ -236,30 +246,70 @@ export default function RefundsTable({
       },
     },
     {
-      header: "Actions",
+      header: () => <div className="text-center w-full">Actions</div>,
       id: "actions",
       cell: ({ row }) => {
         const item = row.original;
-        const isApproved = item.status.toUpperCase() === "APPROVED";
-        return (
-          <div className="py-0.5 text-right">
-            {isApproved ? (
+        const status = item.status.toUpperCase();
+
+        if (status === "APPROVED") {
+          return (
+            <div className="py-0.5 text-center flex justify-center">
               <Button
                 size="sm"
                 onClick={(e) => handleRefundClick(e, item)}
-                className="h-8 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg text-xs py-1 px-4 cursor-pointer"
+                className="h-8 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg text-xs py-1 px-4 cursor-pointer shadow-xs transition-all"
               >
                 Refund
               </Button>
-            ) : (
+            </div>
+          );
+        }
+
+        if (status === "PENDING" || status === "PENDING REVIEW") {
+          return (
+            <div className="py-0.5 text-center flex justify-center">
               <Button
                 size="sm"
-                disabled
-                className="h-8 bg-slate-200 text-slate-400 font-bold rounded-lg text-xs py-1 px-4"
+                onClick={(e) => handleReviewClick(e, item)}
+                className="h-8 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-xs py-1 px-4 cursor-pointer shadow-xs transition-all"
               >
-                Process
+                Approve
               </Button>
-            )}
+            </div>
+          );
+        }
+
+        if (status === "COMPLETED" || status === "PAID") {
+          return (
+            <div className="py-0.5 text-center flex justify-center">
+              <span className="inline-flex items-center gap-1.5 h-8 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/80 font-bold rounded-lg text-xs select-none">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                Completed
+              </span>
+            </div>
+          );
+        }
+
+        if (status === "PROCESSING") {
+          return (
+            <div className="py-0.5 text-center flex justify-center">
+              <span className="inline-flex items-center gap-1.5 h-8 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200/80 font-bold rounded-lg text-xs select-none">
+                Processing...
+              </span>
+            </div>
+          );
+        }
+
+        return (
+          <div className="py-0.5 text-center flex justify-center">
+            <Button
+              size="sm"
+              disabled
+              className="h-8 bg-slate-100 text-slate-400 font-bold rounded-lg text-xs py-1 px-4"
+            >
+              N/A
+            </Button>
           </div>
         );
       },
