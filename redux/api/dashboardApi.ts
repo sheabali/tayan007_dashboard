@@ -96,6 +96,14 @@ export const dashboardApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+    getCategoryStats: builder.query({
+      query: (params) => ({
+        url: "/admin/category/stats",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["Category"],
+    }),
   }),
 });
 
@@ -113,4 +121,5 @@ export const {
   useGetRefundsQuery,
   useSuspendUserMutation,
   useDeleteUserMutation,
+  useGetCategoryStatsQuery,
 } = dashboardApi;

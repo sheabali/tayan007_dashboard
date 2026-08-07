@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { NRTable } from "@/components/ui/core/NRTable";
 import { ColumnDef } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 
 interface Creator {
   name: string;
@@ -18,6 +19,20 @@ interface PayoutData {
   amount: string;
   status: string;
 }
+
+const ProcessCell = () => {
+  const router = useRouter();
+  return (
+    <div className="flex justify-start">
+      <Button
+        onClick={() => router.push("/admin/payouts")}
+        className="px-5 py-1.5 bg-[#153427] hover:bg-[#0f251c] text-white text-xs font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow cursor-pointer"
+      >
+        Process
+      </Button>
+    </div>
+  );
+};
 
 const columns: ColumnDef<PayoutData>[] = [
   {
@@ -69,15 +84,7 @@ const columns: ColumnDef<PayoutData>[] = [
   {
     id: "action",
     header: "ACTION",
-    cell: () => {
-      return (
-        <div className="flex justify-start">
-          <Button className="px-5 py-1.5 bg-[#153427] hover:bg-[#0f251c] text-white text-xs font-semibold rounded-full transition-all duration-200 shadow-sm hover:shadow cursor-pointer">
-            Process
-          </Button>
-        </div>
-      );
-    },
+    cell: () => <ProcessCell />,
   },
 ];
 

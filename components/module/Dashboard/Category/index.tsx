@@ -2,15 +2,52 @@
 
 import { useState } from "react";
 import CategoryStats from "./CategoryStats";
-import CategoryList from "./CategoryList";
-import { mockCategoryStats, mockCategories, CategoryItem } from "./mockData";
+import CategoryList, { CategoryItem } from "./CategoryList";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import AddCategoryModal from "./AddCategoryModal";
+import { useGetCategoryStatsQuery } from "@/redux/api/dashboardApi";
+import { CategoryStatItem } from "./mockData";
 
 const CategoryModule = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<CategoryItem | null>(null);
+  const [page, setPage] = useState(1);
+
+  const { data, isLoading } = useGetCategoryStatsQuery({ page, limit: 10 });
+
+  const apiData = data?.data;
+  const meta = data?.meta;
+
+  // Build stats cards from API
+  const stats: CategoryStatItem[] = [
+    {
+      title: "Total Categories",
+      value: apiData?.totalCategories?.toString() ?? "—",
+    },
+    {
+      title: "Top Category",
+      value: apiData?.topCategory ?? "—",
+    },
+  ];
+
+  // Map API categoryJobs to CategoryItem shape
+  const categories: CategoryItem[] = (apiData?.categoryJobs ?? []).map(
+    (item: {
+      categoryName: string;
+      icon: string;
+      status: string;
+      totalJobs: number;
+      totalPros: number;
+    }, idx: number) => ({
+      id: String(idx),
+      categoryIcon: item.icon,
+      categoryName: item.categoryName,
+      totalJobs: item.totalJobs,
+      totalPros: item.totalPros,
+      status: item.status,
+    })
+  );
 
   const handleAdd = () => {
     setItemToEdit(null);
@@ -22,6 +59,14 @@ const CategoryModule = () => {
     setIsModalOpen(true);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full bg-[#f4f6f9]">
+        <p className="text-slate-500 font-medium">Loading categories...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-6 w-full max-w-full mx-auto p-4 md:p-6 bg-[#f4f6f9] min-h-screen">
       {/* Top Header Section */}
@@ -29,7 +74,6 @@ const CategoryModule = () => {
         <h1 className="text-3xl font-serif text-[#1e293b] tracking-wide">
           Category Management
         </h1>
-        {/* User profile widget */}
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-purple-500 shrink-0"></div>
           <span className="text-sm font-medium text-slate-700">Admin User</span>
@@ -39,7 +83,7 @@ const CategoryModule = () => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 w-full">
         {/* Category Stats Grid */}
         <div className="w-full md:w-auto flex-1">
-          <CategoryStats stats={mockCategoryStats} />
+          <CategoryStats stats={stats} />
         </div>
 
         <Button
@@ -52,9 +96,20 @@ const CategoryModule = () => {
       </div>
 
       {/* Category List & Filters & Table */}
-      <CategoryList categories={mockCategories} onEdit={handleEdit} />
+      <CategoryList
+        categories={categories}
+        onEdit={handleEdit}
+        totalCount={meta?.total}
+        page={page}
+        totalPages={meta?.totalPage ?? 1}
+        onPageChange={setPage}
+      />
 
-      <AddCategoryModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} initialData={itemToEdit} />
+      <AddCategoryModal
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        initialData={itemToEdit}
+      />
     </div>
   );
 };

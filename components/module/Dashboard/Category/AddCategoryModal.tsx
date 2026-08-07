@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import React, { useEffect, useState } from "react";
 import { ImagePlus } from "lucide-react";
-import { CategoryItem } from "./mockData";
+import { CategoryItem } from "./CategoryList";
 import { toast } from "sonner";
 
 interface AddCategoryModalProps {
