@@ -82,6 +82,20 @@ export const dashboardApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Refunds"],
     }),
+    suspendUser: builder.mutation({
+      query: (id: string) => ({
+        url: `/admin/user-management/${id}/suspend`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (result, error, id) => [{ type: "User", id }, "User"],
+    }),
+    deleteUser: builder.mutation({
+      query: (id: string) => ({
+        url: `/admin/user-management/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -97,4 +111,6 @@ export const {
   useGetPayoutsQuery,
   useProcessPayoutMutation,
   useGetRefundsQuery,
+  useSuspendUserMutation,
+  useDeleteUserMutation,
 } = dashboardApi;

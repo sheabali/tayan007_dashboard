@@ -4,9 +4,11 @@ import { useState } from "react";
 import { NRTable } from "@/components/ui/core/NRTable";
 import { CustomSelect } from "@/components/ui/core/CustomSelect/CustomSelect";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Eye, Trash2, ChevronLeft, ChevronRight, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useDeleteUserMutation } from "@/redux/api/dashboardApi";
+import { toast } from "sonner";
 
 export interface UserItem {
   id: string;
@@ -37,6 +39,107 @@ interface UserListProps {
   onFilterChange: (newFilters: UserListProps['filters']) => void;
   isLoading?: boolean;
 }
+
+const ActionCell = ({ row }: { row: { original: UserItem } }) => {
+  const user = row.original;
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleDeleteConfirm = async () => {
+    setShowConfirm(false);
+    try {
+      await deleteUser(user.id).unwrap();
+      toast.success(`${user.name} has been deleted successfully`);
+    } catch (err) {
+      console.error('Failed to delete user:', err);
+      toast.error('Failed to delete user. Please try again.');
+    }
+  };
+
+  return (
+    <>
+      {/* Action Buttons */}
+      <div className="flex items-center gap-2">
+        <Link href={`/user/dashboard/users/${user.id}`}>
+          <Button variant="ghost" className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer active:scale-90 h-8 w-8">
+            <Eye className="w-4 h-4" />
+          </Button>
+        </Link>
+        <Button
+          variant="ghost"
+          onClick={() => setShowConfirm(true)}
+          disabled={isDeleting}
+          className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer active:scale-90 h-8 w-8 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+
+      {/* Custom Confirmation Dialog */}
+      {showConfirm && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backdropFilter: "blur(4px)", backgroundColor: "rgba(0,0,0,0.45)" }}
+          onClick={() => setShowConfirm(false)}
+        >
+          <div
+            className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+            style={{ animation: "modalIn 0.2s cubic-bezier(0.34,1.56,0.64,1)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Red top accent bar */}
+            <div className="h-1.5 w-full bg-gradient-to-r from-red-500 via-rose-500 to-red-400" />
+
+            <div className="px-7 py-6">
+              {/* Icon */}
+              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-red-50 border-2 border-red-100 mx-auto mb-5">
+                <AlertTriangle className="w-7 h-7 text-red-500" />
+              </div>
+
+              {/* Heading */}
+              <h2 className="text-center text-gray-900 font-semibold text-xl mb-1">
+                Delete User
+              </h2>
+              <p className="text-center text-gray-500 text-sm leading-relaxed mb-1">
+                You are about to permanently delete
+              </p>
+              <p className="text-center font-semibold text-gray-800 text-base mb-2">
+                &ldquo;{user.name}&rdquo;
+              </p>
+              <p className="text-center text-xs text-red-400 font-medium mb-6">
+                This action cannot be undone.
+              </p>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowConfirm(false)}
+                  className="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  disabled={isDeleting}
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-rose-500 text-white font-semibold text-sm hover:from-red-600 hover:to-rose-600 transition-all shadow-md shadow-red-100 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {isDeleting ? "Deleting…" : "Yes, Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <style>{`
+            @keyframes modalIn {
+              from { opacity: 0; transform: scale(0.88) translateY(10px); }
+              to   { opacity: 1; transform: scale(1)    translateY(0px);  }
+            }
+          `}</style>
+        </div>
+      )}
+    </>
+  );
+};
 
 const UserList = ({ users, meta, filters, onFilterChange, isLoading }: UserListProps) => {
   const { role: activeTab, status: statusFilter, sort: sortOrder, page, limit } = filters;
@@ -76,8 +179,8 @@ const UserList = ({ users, meta, filters, onFilterChange, isLoading }: UserListP
           .join("")
           .toUpperCase()
           .slice(0, 1); // Only 1 letter in the image avatar
-        const bgClass =
-          user.role === "Creator" || user.role === "Professional"
+        const isPro = user.role === "Creator" || user.role === "Professional" || user.role === "WORKER" || user.role === "PROFESSIONAL";
+        const bgClass = isPro
             ? "bg-[#6366F1] text-white"
             : "bg-[#4F46E5] text-white";
         return (
@@ -121,8 +224,8 @@ const UserList = ({ users, meta, filters, onFilterChange, isLoading }: UserListP
       header: "Status",
       cell: ({ row }) => {
         const status = row.original.status;
-        const bg =
-          status === "active"
+        const isActive = status === "active" || status === "ACTIVE";
+        const bg = isActive
             ? "bg-[#DCFCE7] text-[#16A34A]"
             : "bg-[#FEE2E2] text-[#DC2626]";
         return (
@@ -139,9 +242,9 @@ const UserList = ({ users, meta, filters, onFilterChange, isLoading }: UserListP
       header: "Role",
       cell: ({ row }) => {
         const role = row.original.role;
-        const displayRole = role === "Creator" || role === "Professional" ? "Professional" : "Client";
-        const bg =
-          role === "Creator" || role === "Professional"
+        const isPro = role === "Creator" || role === "Professional" || role === "WORKER" || role === "PROFESSIONAL";
+        const displayRole = isPro ? "Professional" : "Client";
+        const bg = isPro
             ? "bg-indigo-100 text-indigo-700"
             : "bg-blue-100 text-blue-700";
         return (
@@ -167,21 +270,7 @@ const UserList = ({ users, meta, filters, onFilterChange, isLoading }: UserListP
     {
       id: "actions",
       header: "Actions",
-      cell: ({ row }) => {
-        const user = row.original;
-        return (
-          <div className="flex items-center gap-2">
-            <Link href={`/user/dashboard/users/${user.id}?role=${(user.role === 'Creator' || user.role === 'Professional') ? 'professional' : 'client'}`}>
-              <Button variant="ghost" className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer active:scale-90 h-8 w-8">
-                <Eye className="w-4 h-4" />
-              </Button>
-            </Link>
-            <Button variant="ghost" className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer active:scale-90 h-8 w-8">
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
-        );
-      },
+      cell: ({ row }) => <ActionCell row={row} />,
     },
   ];
 

@@ -12,12 +12,14 @@ import {
     Banknote,
     LogIn,
     MessageSquare,
-    CreditCard
+    CreditCard,
+    User,
 } from "lucide-react";
 import { Suspense } from "react";
 import ProfessionalDetails from "./ProfessionalDetails";
 import { useParams, useSearchParams } from "next/navigation";
-import { useGetUserDetailsQuery } from "@/redux/api/dashboardApi";
+import { useGetUserDetailsQuery, useSuspendUserMutation } from "@/redux/api/dashboardApi";
+import { toast } from "sonner";
 
 interface TimelineItem {
     title?: string;
@@ -89,25 +91,68 @@ const UserDetailsManagementContent = () => {
 
     const { data: response, isLoading, isError } = useGetUserDetailsQuery(id);
 
+    // Hooks must be called unconditionally at the top level — before any early returns
+    const [suspendUser, { isLoading: isSuspending }] = useSuspendUserMutation();
+
     if (isLoading) {
-        return <div className="p-6 text-center text-gray-500">Loading user details...</div>;
+        return (
+            <div className="flex flex-col gap-6 w-full p-4 md:p-6 bg-[#f4f6f9] min-h-screen">
+                <div className="flex items-center justify-center h-64">
+                    <div className="flex flex-col items-center gap-3">
+                        <div className="w-10 h-10 border-4 border-[#114232] border-t-transparent rounded-full animate-spin" />
+                        <p className="text-gray-500 text-sm font-medium">Loading user details...</p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     if (isError || !response?.data) {
-        return <div className="p-6 text-center text-red-500">Failed to load user details.</div>;
+        return (
+            <div className="flex flex-col gap-6 w-full p-4 md:p-6 bg-[#f4f6f9] min-h-screen">
+                <div className="flex items-center justify-center h-64">
+                    <p className="text-red-500 font-medium">Failed to load user details.</p>
+                </div>
+            </div>
+        );
     }
 
     const userData = response.data;
 
-    // Determine role from API or fallback to param
+    // Determine role from API
     const apiRole = userData?.personalInfo?.role;
     const isProfessional = apiRole === 'WORKER' || apiRole === 'PROFESSIONAL' || roleParam === 'professional';
 
     if (isProfessional) {
-        return <ProfessionalDetails />;
+        return (
+            <ProfessionalDetails
+                personalInfo={userData.personalInfo}
+                contactInfo={userData.contactInfo}
+                businessDetails={userData.businessDetails}
+                expertise={userData.expertise}
+                verificationDocs={userData.verificationDocs}
+                locationInfo={userData.locationInfo}
+                guarantorInformation={userData.guarantorInformation}
+                portfolio={userData.portfolio}
+            />
+        );
     }
 
+    // CLIENT VIEW
     const { personalInfo, contactInfo, stats, timeline } = userData;
+
+    const isAlreadySuspended = personalInfo?.status === 'SUSPENDED';
+
+    const handleSuspend = async () => {
+        if (isAlreadySuspended || isSuspending) return;
+        try {
+            await suspendUser(personalInfo.id).unwrap();
+            toast.success(`${personalInfo?.name ?? 'User'} has been suspended successfully`);
+        } catch (err) {
+            console.error('Failed to suspend user:', err);
+            toast.error('Failed to suspend user. Please try again.');
+        }
+    };
 
     return (
         <div className="flex flex-col gap-6 w-full max-w-full mx-auto p-4 md:p-6 bg-[#f4f6f9] min-h-screen relative">
@@ -129,11 +174,18 @@ const UserDetailsManagementContent = () => {
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
                             <h2 className="text-3xl font-bold text-[#114232]">{personalInfo?.name}</h2>
-                            <p className="text-gray-500 mt-1">Client ID: {personalInfo?.id} &bull; {personalInfo?.location}</p>
+                            <p className="text-gray-500 mt-1 text-sm">
+                                Client ID: {personalInfo?.id}
+                                {personalInfo?.location && <> &bull; {personalInfo.location}</>}
+                            </p>
                         </div>
-                        <Button className="w-full sm:w-auto text-red-700 border border-red-700 bg-transparent hover:bg-red-50 rounded-xl px-6 py-5 flex items-center justify-center gap-2 font-medium">
+                        <Button
+                            onClick={handleSuspend}
+                            disabled={isSuspending || isAlreadySuspended}
+                            className="w-full sm:w-auto text-red-700 border border-red-700 bg-transparent hover:bg-red-50 rounded-xl px-6 py-5 flex items-center justify-center gap-2 font-medium shadow-none disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
                             <Ban className="w-4 h-4" />
-                            Suspend
+                            {isSuspending ? 'Suspending...' : isAlreadySuspended ? 'Suspended' : 'Suspend'}
                         </Button>
                     </div>
 
@@ -142,12 +194,27 @@ const UserDetailsManagementContent = () => {
                         {/* Profile Card */}
                         <div className="lg:flex-[1.5] bg-white rounded-3xl p-4 flex items-center gap-5 shadow-sm min-h-[150px]">
                             <div className="relative shrink-0 ml-2">
-                                <div className="w-[6rem] h-[6rem] lg:w-[7rem] lg:h-[7rem] rounded-full border-[4px] lg:border-[5px] border-[#f4f6f8] p-0.5">
-                                    <img src={personalInfo?.profileImage || "https://i.pravatar.cc/150?img=11"} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                                <div className="w-[6rem] h-[6rem] lg:w-[7rem] lg:h-[7rem] rounded-full border-[4px] lg:border-[5px] border-[#f4f6f8] overflow-hidden bg-[#e8efe8] flex items-center justify-center">
+                                    {personalInfo?.profileImage ? (
+                                        <img
+                                            src={personalInfo.profileImage}
+                                            alt="Profile"
+                                            className="w-full h-full rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <User className="w-10 h-10 text-[#114232]" />
+                                    )}
                                 </div>
                                 <div className={`absolute bottom-[6px] right-[6px] w-[1.2rem] h-[1.2rem] ${personalInfo?.status === 'ACTIVE' ? 'bg-[#16c062]' : 'bg-gray-400'} border-[3px] border-white rounded-full`}></div>
                             </div>
-                            <span className="font-semibold text-2xl lg:text-[1.7rem] text-[#043322]">{personalInfo?.name}</span>
+                            <div>
+                                <span className="font-semibold text-2xl lg:text-[1.7rem] text-[#043322]">{personalInfo?.name}</span>
+                                <div className="mt-1">
+                                    <span className={`inline-block px-3 py-0.5 text-[11px] font-semibold rounded-full ${personalInfo?.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                        {personalInfo?.status}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Total Spent */}
@@ -157,7 +224,7 @@ const UserDetailsManagementContent = () => {
                             </div>
                             <div>
                                 <h4 className="text-[12px] lg:text-[13px] font-bold text-[#3d4b43] uppercase tracking-wide mb-1">TOTAL SPENT</h4>
-                                <div className="text-4xl lg:text-[2.8rem] leading-none font-bold text-[#043322] tracking-tight">${stats?.totalSpent || 0}</div>
+                                <div className="text-4xl lg:text-[2.8rem] leading-none font-bold text-[#043322] tracking-tight">${stats?.totalSpent ?? 0}</div>
                             </div>
                         </div>
 
@@ -168,7 +235,7 @@ const UserDetailsManagementContent = () => {
                             </div>
                             <div>
                                 <h4 className="text-[12px] lg:text-[13px] font-bold text-[#3d4b43] uppercase tracking-wide mb-1">TOTAL JOBS</h4>
-                                <div className="text-4xl lg:text-[2.8rem] leading-none font-bold text-[#043322] tracking-tight">{stats?.totalJobs || 0}</div>
+                                <div className="text-4xl lg:text-[2.8rem] leading-none font-bold text-[#043322] tracking-tight">{stats?.totalJobs ?? 0}</div>
                             </div>
                         </div>
 
@@ -179,7 +246,7 @@ const UserDetailsManagementContent = () => {
                             </div>
                             <div>
                                 <h4 className="text-[12px] lg:text-[13px] font-bold text-[#3d4b43] uppercase tracking-wide mb-1">ACTIVE JOBS</h4>
-                                <div className="text-4xl lg:text-[2.8rem] leading-none font-bold text-[#043322] tracking-tight">{stats?.activeJobs || 0}</div>
+                                <div className="text-4xl lg:text-[2.8rem] leading-none font-bold text-[#043322] tracking-tight">{stats?.activeJobs ?? 0}</div>
                             </div>
                         </div>
                     </div>
@@ -209,15 +276,17 @@ const UserDetailsManagementContent = () => {
                                 </div>
                             </div>
                             {/* Address */}
-                            <div className="flex items-start gap-4 lg:gap-5">
-                                <div className="w-12 h-12 rounded-2xl bg-[#f4f7f6] flex items-center justify-center shrink-0">
-                                    <MapPin className="w-5 h-5 text-[#114232]" />
+                            {contactInfo?.primaryAddress && (
+                                <div className="flex items-start gap-4 lg:gap-5">
+                                    <div className="w-12 h-12 rounded-2xl bg-[#f4f7f6] flex items-center justify-center shrink-0">
+                                        <MapPin className="w-5 h-5 text-[#114232]" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-bold text-gray-500 tracking-widest uppercase mb-1">PRIMARY ADDRESS</p>
+                                        <p className="text-sm font-semibold text-[#114232]">{contactInfo.primaryAddress}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-[10px] font-bold text-gray-500 tracking-widest uppercase mb-1">PRIMARY ADDRESS</p>
-                                    <p className="text-sm font-semibold text-[#114232]">{contactInfo?.primaryAddress || 'N/A'}</p>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
 
@@ -266,5 +335,3 @@ const UserDetailsManagementModule = () => {
 };
 
 export default UserDetailsManagementModule;
-
-

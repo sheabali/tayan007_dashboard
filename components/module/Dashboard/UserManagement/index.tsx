@@ -14,11 +14,15 @@ const UserManagementModule = () => {
     limit: 10,
   });
 
-  // Map filters to API params
+  // Map filters to API params — role values sent as API expects (CLIENT / WORKER)
+  const roleApiMap: Record<string, string> = {
+    Client: "CLIENT",
+    Professional: "WORKER",
+  };
   const apiParams = {
     page: filters.page,
     limit: filters.limit,
-    role: filters.role,
+    role: roleApiMap[filters.role] || filters.role,
     ...(filters.status !== "All Users" && { status: filters.status.toUpperCase() }),
     sort: filters.sort,
   };
@@ -42,7 +46,18 @@ const UserManagementModule = () => {
     ];
   }
 
-  const users = response?.data || [];
+  // Normalize API user data to match UserItem interface
+  const rawUsers = response?.data || [];
+  const users = rawUsers.map((u: Record<string, unknown>) => ({
+    id: (u._id || u.id) as string,
+    name: u.name as string,
+    userId: u.userId as string | undefined,
+    email: u.email as string,
+    phone: u.phone as string,
+    status: u.status as string,
+    role: u.role as string,
+    joinDate: u.joinDate as string,
+  }));
   const meta = response?.meta;
 
   return (
