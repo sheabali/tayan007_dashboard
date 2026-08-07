@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import DeleteConfirmationModal from "@/components/ui/core/NRModal/DeleteConfirmationModal";
+import { useDeleteCategoryMutation } from "@/redux/api/dashboardApi";
 
 export interface CategoryItem {
   id: string;
@@ -58,6 +59,8 @@ const CategoryList = ({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<CategoryItem | null>(null);
 
+  const [deleteCategory, { isLoading: isDeleting }] = useDeleteCategoryMutation();
+
   const handleEdit = (item: CategoryItem) => onEdit(item);
 
   const handleDeleteClick = (item: CategoryItem) => {
@@ -65,11 +68,16 @@ const CategoryList = ({
     setDeleteModalOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (itemToDelete) {
-      toast.success(`${itemToDelete.categoryName} deleted successfully`);
-      setDeleteModalOpen(false);
-      setItemToDelete(null);
+      try {
+        await deleteCategory(itemToDelete.id).unwrap();
+        toast.success(`${itemToDelete.categoryName} deleted successfully`);
+        setDeleteModalOpen(false);
+        setItemToDelete(null);
+      } catch {
+        toast.error(`Failed to delete ${itemToDelete.categoryName}. Please try again.`);
+      }
     }
   };
 
@@ -203,6 +211,7 @@ const CategoryList = ({
         onOpenChange={setDeleteModalOpen}
         name={itemToDelete?.categoryName || null}
         onConfirm={confirmDelete}
+        isLoading={isDeleting}
       />
     </div>
   );

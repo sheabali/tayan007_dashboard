@@ -104,6 +104,13 @@ export const dashboardApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Category"],
     }),
+    deleteCategory: builder.mutation({
+      query: (id: string) => ({
+        url: `/admin/category/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Category"],
+    }),
   }),
 });
 
@@ -122,4 +129,5 @@ export const {
   useSuspendUserMutation,
   useDeleteUserMutation,
   useGetCategoryStatsQuery,
+  useDeleteCategoryMutation,
 } = dashboardApi;

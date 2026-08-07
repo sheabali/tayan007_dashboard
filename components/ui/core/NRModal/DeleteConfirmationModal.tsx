@@ -14,6 +14,7 @@ interface DeleteModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   onConfirm: () => void;
+  isLoading?: boolean;
 }
 
 const DeleteConfirmationModal: React.FC<DeleteModalProps> = ({
@@ -21,6 +22,7 @@ const DeleteConfirmationModal: React.FC<DeleteModalProps> = ({
   isOpen,
   onOpenChange,
   onConfirm,
+  isLoading = false,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -39,12 +41,10 @@ const DeleteConfirmationModal: React.FC<DeleteModalProps> = ({
           </Button>
           <Button
             variant="destructive"
-            onClick={() => {
-              onConfirm();
-              onOpenChange(false);
-            }}
+            disabled={isLoading}
+            onClick={onConfirm}
           >
-            Confirm
+            {isLoading ? "Deleting..." : "Confirm"}
           </Button>
         </DialogFooter>
       </DialogContent>
