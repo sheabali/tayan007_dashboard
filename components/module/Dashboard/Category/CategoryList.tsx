@@ -58,6 +58,7 @@ const CategoryList = ({
 }: CategoryListProps) => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<CategoryItem | null>(null);
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
 
   const [deleteCategory, { isLoading: isDeleting }] = useDeleteCategoryMutation();
 
@@ -72,6 +73,8 @@ const CategoryList = ({
     if (itemToDelete) {
       try {
         await deleteCategory(itemToDelete.id).unwrap();
+        // Immediately hide the deleted row from the table
+        setDeletedIds((prev) => new Set(prev).add(itemToDelete.id));
         toast.success(`${itemToDelete.categoryName} deleted successfully`);
         setDeleteModalOpen(false);
         setItemToDelete(null);
@@ -154,17 +157,20 @@ const CategoryList = ({
     },
   ];
 
+  // Filter out locally deleted rows for instant UI feedback
+  const visibleCategories = categories.filter((c) => !deletedIds.has(c.id));
+
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="bg-white p-6 rounded-[8px] shadow-sm w-full border border-slate-100">
-        <NRTable columns={columns} data={categories} />
+        <NRTable columns={columns} data={visibleCategories} />
 
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-slate-100">
           <span className="text-sm text-slate-500">
-            Showing {categories.length} of {totalCount ?? categories.length}
+            Showing {visibleCategories.length} of {totalCount ?? categories.length}
           </span>
 
           {totalPages > 1 && (

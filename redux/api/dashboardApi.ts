@@ -104,6 +104,22 @@ export const dashboardApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Category"],
     }),
+    createCategory: builder.mutation({
+      query: (formData: FormData) => ({
+        url: "/admin/category",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["Category"],
+    }),
+    updateCategory: builder.mutation({
+      query: ({ id, formData }: { id: string; formData: FormData }) => ({
+        url: `/admin/category/${id}`,
+        method: "PATCH",
+        body: formData,
+      }),
+      invalidatesTags: ["Category"],
+    }),
     deleteCategory: builder.mutation({
       query: (id: string) => ({
         url: `/admin/category/${id}`,
@@ -129,5 +145,7 @@ export const {
   useSuspendUserMutation,
   useDeleteUserMutation,
   useGetCategoryStatsQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
   useDeleteCategoryMutation,
 } = dashboardApi;

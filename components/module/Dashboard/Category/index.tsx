@@ -16,38 +16,52 @@ const CategoryModule = () => {
 
   const { data, isLoading } = useGetCategoryStatsQuery({ page, limit: 10 });
 
+  // Separate query to fetch ALL categories (all pages) for an accurate total count
+  const { data: allData } = useGetCategoryStatsQuery({ page: 1, limit: 9999 });
+
   const apiData = data?.data;
   const meta = data?.meta;
+
+  // Count all non-deleted categories across every page
+  const totalActiveCategories = (allData?.data?.categoryJobs ?? []).filter(
+    (item: { status: string }) => item.status?.toUpperCase() !== "DELETED"
+  ).length;
 
   // Build stats cards from API
   const stats: CategoryStatItem[] = [
     {
       title: "Total Categories",
-      value: apiData?.totalCategories?.toString() ?? "—",
+      value: totalActiveCategories > 0
+        ? totalActiveCategories.toString()
+        : (data?.data?.totalCategories?.toString() ?? "—"),
     },
     {
       title: "Top Category",
-      value: apiData?.topCategory ?? "—",
+      value: data?.data?.topCategory ?? "—",
     },
   ];
 
-  // Map API categoryJobs to CategoryItem shape
-  const categories: CategoryItem[] = (apiData?.categoryJobs ?? []).map(
-    (item: {
-      categoryName: string;
-      icon: string;
-      status: string;
-      totalJobs: number;
-      totalPros: number;
-    }, idx: number) => ({
-      id: String(idx),
-      categoryIcon: item.icon,
-      categoryName: item.categoryName,
-      totalJobs: item.totalJobs,
-      totalPros: item.totalPros,
-      status: item.status,
-    })
-  );
+  // Map API categoryJobs to CategoryItem shape, excluding soft-deleted entries
+  const categories: CategoryItem[] = (apiData?.categoryJobs ?? [])
+    .filter((item: { status: string }) => item.status?.toUpperCase() !== "DELETED")
+    .map(
+      (item: {
+        id: string;
+        name?: string;
+        categoryName?: string;
+        icon: string;
+        status: string;
+        totalJobs: number;
+        totalPros: number;
+      }) => ({
+        id: item.id,
+        categoryIcon: item.icon,
+        categoryName: item.categoryName ?? item.name ?? "",
+        totalJobs: item.totalJobs,
+        totalPros: item.totalPros,
+        status: item.status,
+      })
+    );
 
   const handleAdd = () => {
     setItemToEdit(null);
