@@ -173,6 +173,58 @@ export const dashboardApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Location"],
     }),
+    getDisputes: builder.query({
+      query: (params) => ({
+        url: "/admin/dispute",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["Dispute"],
+    }),
+    getSingleDispute: builder.query({
+      query: (id: string) => ({
+        url: `/admin/dispute/${id}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "Dispute", id }],
+    }),
+    requestExplanation: builder.mutation({
+      query: ({ id, note }: { id: string; note: string }) => ({
+        url: `/admin/dispute/${id}/explanation-note`,
+        method: "PATCH",
+        body: { note },
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: "Dispute", id }],
+    }),
+    getApplications: builder.query({
+      query: (params) => ({
+        url: "/admin/user-management/applications",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["Applications"],
+    }),
+    getSingleApplication: builder.query({
+      query: (id: string) => ({
+        url: `/admin/user-management/applicant/${id}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "Applications", id }],
+    }),
+    approveApplication: builder.mutation({
+      query: (id: string) => ({
+        url: `/admin/user-management/applicant/${id}/approve`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (result, error, id) => [{ type: "Applications", id }, "Applications"],
+    }),
+    rejectApplication: builder.mutation({
+      query: (id: string) => ({
+        url: `/admin/user-management/applicant/${id}/reject`,
+        method: "PATCH",
+      }),
+      invalidatesTags: (result, error, id) => [{ type: "Applications", id }, "Applications"],
+    }),
   }),
 });
 
@@ -198,4 +250,11 @@ export const {
   useCreateLocationMutation,
   useUpdateLocationMutation,
   useDeleteLocationMutation,
+  useGetDisputesQuery,
+  useGetSingleDisputeQuery,
+  useRequestExplanationMutation,
+  useGetApplicationsQuery,
+  useGetSingleApplicationQuery,
+  useApproveApplicationMutation,
+  useRejectApplicationMutation,
 } = dashboardApi;
