@@ -8,8 +8,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import React, { useState } from "react";
-import { LocationItem } from "./mockData";
+import { LocationItem } from "./LocationList";
 import { toast } from "sonner";
+import {
+  useCreateLocationMutation,
+  useUpdateLocationMutation,
+} from "@/redux/api/dashboardApi";
 
 interface AddCountryModalProps {
   isOpen: boolean;
@@ -17,16 +21,25 @@ interface AddCountryModalProps {
   initialData?: LocationItem | null;
 }
 
+const inputClass =
+  "w-full bg-slate-50 border border-slate-100 rounded-[8px] p-3 text-sm text-slate-700 outline-none focus:border-teal-500 transition-colors placeholder:text-slate-400";
+
 const AddCountryModal: React.FC<AddCountryModalProps> = ({
   isOpen,
   onOpenChange,
   initialData,
 }) => {
   const [country, setCountry] = useState(initialData?.country || "");
-  const [currencyName, setCurrencyName] = useState(
-    initialData ? (initialData.currency === "NGN" ? "Nigerian Naira" : "West African CFA franc") : ""
+  const [currency, setCurrency] = useState(initialData?.currency || "");
+  const [stateCount, setStateCount] = useState(
+    initialData?.stateCount?.toString() || ""
   );
-  const [currencySymbol, setCurrencySymbol] = useState(initialData?.currency || "");
+  const [cityCount, setCityCount] = useState(
+    initialData?.cityCount?.toString() || ""
+  );
+  const [serviceAreaCount, setServiceAreaCount] = useState(
+    initialData?.serviceAreaCount?.toString() || ""
+  );
 
   const [prevInitialData, setPrevInitialData] = useState(initialData);
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
@@ -34,29 +47,57 @@ const AddCountryModal: React.FC<AddCountryModalProps> = ({
   if (initialData !== prevInitialData || isOpen !== prevIsOpen) {
     setPrevInitialData(initialData);
     setPrevIsOpen(isOpen);
-    
+
     if (isOpen) {
       if (initialData) {
         setCountry(initialData.country);
-        setCurrencySymbol(initialData.currency);
-        setCurrencyName(initialData.currency === "NGN" ? "Nigerian Naira" : "West African CFA franc");
+        setCurrency(initialData.currency);
+        setStateCount(initialData.stateCount?.toString() || "");
+        setCityCount(initialData.cityCount?.toString() || "");
+        setServiceAreaCount(initialData.serviceAreaCount?.toString() || "");
       } else {
         setCountry("");
-        setCurrencyName("");
-        setCurrencySymbol("");
+        setCurrency("");
+        setStateCount("");
+        setCityCount("");
+        setServiceAreaCount("");
       }
     }
   }
 
   const isEditing = !!initialData;
 
-  const handleSubmit = () => {
-    if (isEditing) {
-      toast.success("Country updated successfully");
-    } else {
-      toast.success("Country added successfully");
+  const [createLocation, { isLoading: isCreating }] = useCreateLocationMutation();
+  const [updateLocation, { isLoading: isUpdating }] = useUpdateLocationMutation();
+  const isLoading = isCreating || isUpdating;
+
+  const handleSubmit = async () => {
+    if (!country.trim() || !currency.trim()) {
+      toast.error("Country name and currency code are required.");
+      return;
     }
-    onOpenChange(false);
+
+    const payload = {
+      country: country.trim(),
+      currency: currency.trim(),
+      stateCount: Number(stateCount) || 0,
+      cityCount: Number(cityCount) || 0,
+      serviceAreaCount: Number(serviceAreaCount) || 0,
+      status: initialData?.status || "ACTIVE",
+    };
+
+    try {
+      if (isEditing && initialData) {
+        await updateLocation({ id: initialData.id, ...payload }).unwrap();
+        toast.success("Country updated successfully");
+      } else {
+        await createLocation(payload).unwrap();
+        toast.success("Country added successfully");
+      }
+      onOpenChange(false);
+    } catch {
+      toast.error(isEditing ? "Failed to update country." : "Failed to add country.");
+    }
   };
 
   return (
@@ -67,46 +108,93 @@ const AddCountryModal: React.FC<AddCountryModalProps> = ({
             {isEditing ? "Edit Country" : "Add New Country"}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="flex flex-col gap-5">
+          {/* Country name */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-slate-700">Country name</label>
-            <input 
-              type="text" 
+            <label className="text-sm font-medium text-slate-700">
+              Country name <span className="text-red-400">*</span>
+            </label>
+            <input
+              type="text"
               value={country}
               onChange={(e) => setCountry(e.target.value)}
-              placeholder="e.g. Ivory Coast" 
-              className="w-full bg-slate-50 border border-slate-100 rounded-[8px] p-3 text-sm text-slate-700 outline-none focus:border-teal-500 transition-colors placeholder:text-slate-400"
+              placeholder="e.g. South Africa"
+              className={inputClass}
             />
           </div>
 
+          {/* Currency code */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-slate-700">Currency name</label>
-            <input 
-              type="text" 
-              value={currencyName}
-              onChange={(e) => setCurrencyName(e.target.value)}
-              placeholder="e.g. West African CFA franc" 
-              className="w-full bg-slate-50 border border-slate-100 rounded-[8px] p-3 text-sm text-slate-700 outline-none focus:border-teal-500 transition-colors placeholder:text-slate-400"
+            <label className="text-sm font-medium text-slate-700">
+              Currency code <span className="text-red-400">*</span>
+            </label>
+            <input
+              type="text"
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              placeholder="e.g. ZAR"
+              className={inputClass}
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-slate-700">Currency symbol</label>
-            <input 
-              type="text" 
-              value={currencySymbol}
-              onChange={(e) => setCurrencySymbol(e.target.value)}
-              placeholder="e.g. CFA" 
-              className="w-full bg-slate-50 border border-slate-100 rounded-[8px] p-3 text-sm text-slate-700 outline-none focus:border-teal-500 transition-colors placeholder:text-slate-400"
-            />
+          {/* State / City / Service area counts in a row */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-slate-700">
+                State count
+              </label>
+              <input
+                type="number"
+                min={0}
+                value={stateCount}
+                onChange={(e) => setStateCount(e.target.value)}
+                placeholder="9"
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-slate-700">
+                City count
+              </label>
+              <input
+                type="number"
+                min={0}
+                value={cityCount}
+                onChange={(e) => setCityCount(e.target.value)}
+                placeholder="25"
+                className={inputClass}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-slate-700">
+                Service areas
+              </label>
+              <input
+                type="number"
+                min={0}
+                value={serviceAreaCount}
+                onChange={(e) => setServiceAreaCount(e.target.value)}
+                placeholder="50"
+                className={inputClass}
+              />
+            </div>
           </div>
 
-          <Button 
+          <Button
             onClick={handleSubmit}
-            className="w-full bg-[#1e6660] hover:bg-[#154f49] text-white py-6 rounded-[8px] mt-2 font-medium"
+            disabled={isLoading}
+            className="w-full bg-[#1e6660] hover:bg-[#154f49] text-white py-6 rounded-[8px] mt-2 font-medium disabled:opacity-60"
           >
-            {isEditing ? "Save Changes" : "Add Country"}
+            {isLoading
+              ? isEditing
+                ? "Saving..."
+                : "Adding..."
+              : isEditing
+              ? "Save Changes"
+              : "Add Country"}
           </Button>
         </div>
       </DialogContent>

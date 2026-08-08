@@ -1,6 +1,9 @@
 "use client";
 
-import { LocationStatItem } from "./mockData";
+export interface LocationStatItem {
+  title: string;
+  value: string;
+}
 
 interface LocationStatsProps {
   stats: LocationStatItem[];

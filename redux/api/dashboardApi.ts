@@ -127,6 +127,52 @@ export const dashboardApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Category"],
     }),
+    getLocations: builder.query({
+      query: (params) => ({
+        url: "/admin/location",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["Location"],
+    }),
+    createLocation: builder.mutation({
+      query: (body: {
+        country: string;
+        currency: string;
+        stateCount: number;
+        cityCount: number;
+        serviceAreaCount: number;
+        status: string;
+      }) => ({
+        url: "/admin/location",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Location"],
+    }),
+    updateLocation: builder.mutation({
+      query: ({ id, ...body }: {
+        id: string;
+        country: string;
+        currency: string;
+        stateCount: number;
+        cityCount: number;
+        serviceAreaCount: number;
+        status: string;
+      }) => ({
+        url: `/admin/location/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Location"],
+    }),
+    deleteLocation: builder.mutation({
+      query: (id: string) => ({
+        url: `/admin/location/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Location"],
+    }),
   }),
 });
 
@@ -148,4 +194,8 @@ export const {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useGetLocationsQuery,
+  useCreateLocationMutation,
+  useUpdateLocationMutation,
+  useDeleteLocationMutation,
 } = dashboardApi;
