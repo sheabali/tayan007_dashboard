@@ -221,10 +221,10 @@ export default function Otp() {
                   disabled={isVerifyingOtp || otpValues.some((v) => !v)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="cursor-pointer w-full bg-primary disabled:bg-primary/60 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                  className="cursor-pointer w-full bg-primary disabled:bg-primary/60 text-white font-medium py-3 px-4 rounded-sm transition-colors duration-200 flex items-center justify-center"
                 >
                   {isVerifyingOtp ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-xs animate-spin" />
                   ) : (
                     "Verify OTP"
                   )}

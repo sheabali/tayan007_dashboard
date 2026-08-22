@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, UserPlus, Brush, FileCheck } from "lucide-react";
+import { Brush, FileCheck, UserPlus, Users } from "lucide-react";
 
 export interface UserStatItem {
   title: string;
@@ -54,7 +54,9 @@ const UserStats = ({ stats }: UserStatsProps) => {
                 {stat.value}
               </span>
             </div>
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${theme.bg} ${theme.color}`}>
+            <div
+              className={`p-3.5 rounded-xl ${theme.bg} ${theme.color} transition-transform duration-300 hover:scale-110`}
+            >
               <Icon className="w-6 h-6 stroke-[2]" />
             </div>
           </div>
