@@ -51,6 +51,8 @@ const AdminLogin = () => {
       const res = (await login(data).unwrap()) as any;
 
       if (res.success) {
+
+        console.log("res", res)
         const token = res.data.token;
         await setCookie(token);
 
@@ -59,7 +61,7 @@ const AdminLogin = () => {
 
         toast.success(res.message || "Login successful!");
 
-        if (user?.role === "Admin") {
+        if (user?.role?.toUpperCase() === "ADMIN") {
           router.push("/admin/dashboard");
         } else {
           router.push("/");
@@ -113,14 +115,14 @@ const AdminLogin = () => {
               placeholder="Enter your password"
             />
 
-            <Link href="/admin/dashboard">
+            <>
               <Button
                 type="submit"
                 disabled={isLoading}
                 className="w-full py-6 mt-6 font-semibold"
               >
                 {isLoading ? <Spinner /> : "Login"}
-              </Button></Link>
+              </Button></>
           </form>
         </FormProvider>
       </div>
